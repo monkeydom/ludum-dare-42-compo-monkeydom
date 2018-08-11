@@ -5,6 +5,12 @@ using TMPro;
 
 namespace MonkeydomSpecific {
 
+	public enum SegmentDataPartType {
+		Start,
+		Middle,
+		End,
+	}
+
 	public class SegmentData : ScriptableObject {
 		[HideInInspector]
 		public System.Action validationListener;
@@ -19,6 +25,9 @@ namespace MonkeydomSpecific {
 		public int segmentLength = 1;
 
 		public int location = 0;
+
+		public SegmentDataPartType partType;
+		public Level level;
 
 		public override string ToString() {
 			return $"File{fileNumber}#{segmentNumber}-{segmentLength}";

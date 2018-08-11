@@ -12,43 +12,28 @@ namespace MonkeydomSpecific {
 
 		GameObject temporaryMoveSegment;
 
+		Level level;
+
 		[Header("Outlets")]
 		public Camera mainCamera;
 		public GameObject segmentPrefab;
 		public Material segmentBaseColor;
 		public Material[] segmentColorPalette;
 		public GameObject segmentsContainer;
-		List<SegmentData> segments;
 
 		List<Material> segmentColor;
 
-		int width = 35;
-
 		// Use this for initialization
 		public void Start() {
-			InitializeSegments();
+			level = new Level(34, 34 * 20 + 13, Random.Range(3, 5), Random.Range(16, 60));
+			//			InitializeSegments();
+			GenerateColors(level.files.Count);
 			GenerateSegmentObjects();
-			GameController.Instance.DebugOutput($"Segments: {segments.Count()}\nFiles: {segments.Last().fileNumber}");
+			GameController.Instance.DebugOutput($"Segments: {level.segments.Count()}\nFiles: {level.files.Count}");
 		}
 
 		void InitializeSegments() {
-			segments = new List<SegmentData>();
-			int location = 0;
-			int fileCount = Random.Range(3, 10);
-			for (int index = 0; index < fileCount; index++) {
-				int segmentCount = Random.Range(3, 10);
-				for (int segmentIndex = 0; segmentIndex < segmentCount; segmentIndex++) {
-					SegmentData data = new SegmentData();
-					data.fileNumber = index;
-					data.segmentNumber = segmentIndex + 1;
-					data.segmentLength = Random.Range(1, 8);
-					data.location = location;
-					location += data.segmentLength + 1 + Random.Range(0, 4);
-					segments.Add(data);
-				}
-			}
-
-			GenerateColors(fileCount);
+			GenerateColors(level.files.Count());
 		}
 
 		void GenerateColors(int upTo) {
@@ -75,10 +60,10 @@ namespace MonkeydomSpecific {
 			segmentsContainer = new GameObject("Segments Container");
 
 			Transform transform = segmentsContainer.transform;
-			transform.localPosition = new Vector3(-width / 2.0f, 13, 0.1f);
+			transform.localPosition = new Vector3(-level.width / 2.0f, 13, 0.1f);
 			transform.parent = gameObject.transform;
 
-			foreach (SegmentData segment in segments) {
+			foreach (SegmentData segment in level.segments) {
 				GameObject segmentObject = Instantiate(segmentPrefab, transform);
 				segmentObject.name = $"Seg_{segment}";
 				var sb = segmentObject.GetComponent<SegmentBehavior>();
@@ -95,21 +80,21 @@ namespace MonkeydomSpecific {
 		#region Geometry stuff
 
 		Vector3 PositionForLocation(int location) {
-			int x = location % width;
-			int y = location / width;
+			int x = location % level.width;
+			int y = location / level.width;
 			var position = new Vector3(x, -y, 0);
 			return position;
 		}
 
 		int? LocationForPosition(Vector2 position) {
-			if (position.x < -0.5f || position.x > width + 0.5f) {
+			if (position.x < -0.5f || position.x > level.width + 0.5f) {
 				return null;
 			}
 			if (position.y > 0.5f) {
 				return null;
 			}
 
-			int result = (int)Mathf.Round(position.x - 0.5f) + width * (int)Mathf.Round(Mathf.Abs(position.y));
+			int result = (int)Mathf.Round(position.x - 0.5f) + level.width * (int)Mathf.Round(Mathf.Abs(position.y));
 			return result;
 		}
 
@@ -121,6 +106,10 @@ namespace MonkeydomSpecific {
 		}
 
 		void HandleInput() {
+			if (!segmentsContainer) {
+				return;
+			}
+
 			if (Input.GetButtonDown("Jump")) {
 				FindObjectOfType<LevelController>().Start();
 			}

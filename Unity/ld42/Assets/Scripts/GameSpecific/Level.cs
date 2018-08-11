@@ -4,8 +4,137 @@ using UnityEngine;
 
 namespace MonkeydomSpecific {
 
-	public class Level {
+	public class FileData {
+		public int fileID;
+		public int fileLength;
+		public List<SegmentData> segments;
 
+		public FileData(Level level, int fileID, int fileLength) {
+			this.fileID = fileID;
+			this.fileLength = fileLength;
+
+			segments = new List<SegmentData>();
+
+			int segmentIndex = 0;
+			int remainingLength = fileLength;
+			while (remainingLength > 0) {
+				int segmentLength = Random.Range(1, System.Math.Min(remainingLength, 16));
+				if (segmentLength == remainingLength && segmentIndex == 0) {
+					segmentLength = Random.Range(1, segmentLength - 1);
+				}
+				SegmentData segment = new SegmentData();
+				segment.fileNumber = fileID;
+				segment.segmentNumber = segmentIndex + 1;
+				segment.segmentLength = segmentLength;
+				segment.level = level;
+				if (segmentIndex == 0) {
+					segment.partType = SegmentDataPartType.Start;
+				} else if (remainingLength == segmentLength) {
+					segment.partType = SegmentDataPartType.End;
+				} else {
+					segment.partType = SegmentDataPartType.Middle;
+				}
+				segments.Add(segment);
+
+				segmentIndex += 1;
+				remainingLength -= segmentLength;
+			}
+
+		}
 	}
 
+	public class IntRange {
+		public int location;
+		public int length;
+
+		public IntRange(int location, int length) {
+			this.location = location;
+			this.length = length;
+		}
+
+		public int PositionAfter {
+			get {
+				return location + length;
+			}
+		}
+
+		public List<IntRange> CutOutRange(IntRange rangeToCut) {
+			var result = new List<IntRange>();
+			if (rangeToCut.location > location) {
+				result.Add(new IntRange(location, rangeToCut.location - location));
+			}
+			if (rangeToCut.PositionAfter < PositionAfter) {
+				result.Add(new IntRange(rangeToCut.PositionAfter, PositionAfter - rangeToCut.PositionAfter));
+			}
+			return result;
+		}
+	}
+
+	public class Level : ScriptableObject {
+		public int width;
+		public int storageSpace;
+		public List<SegmentData> segments;
+		public List<FileData> files;
+		List<IntRange> orderedFreeRanges;
+
+		public Level(int width, int storageSpace, int fileCount, int fileLength) {
+			this.width = width;
+			this.storageSpace = storageSpace;
+			GenerateFiles(fileCount, fileLength);
+
+			int maxTries = 50;
+			while (!DistributeSegments() && maxTries > 0) {
+				maxTries--;
+			}
+		}
+
+		void GenerateFiles(int fileCount, int fileLength) {
+			segments = new List<SegmentData>();
+
+			files = new List<FileData>();
+
+			for (int index = 0; index < fileCount; index++) {
+				FileData file = new FileData(this, index, Random.Range(10, fileLength));
+				files.Add(file);
+				segments.AddRange(file.segments);
+			}
+		}
+
+		bool DistributeSegments() {
+			orderedFreeRanges = new List<IntRange> { new IntRange(0, storageSpace) };
+			int remainingTries = 100;
+			foreach (SegmentData segment in segments) {
+				bool placed = false;
+				while (!placed) {
+					int index = Random.Range(0, orderedFreeRanges.Count - 1);
+					IntRange targetRange = orderedFreeRanges[index];
+					int requiredLength = segment.segmentLength + 1;
+					if (segment.partType == SegmentDataPartType.End) {
+						requiredLength += 1;
+					}
+					if (targetRange.length < requiredLength) {
+						remainingTries--;
+					} else {
+						// place
+						IntRange placingRange = new IntRange(Random.Range(targetRange.location, targetRange.PositionAfter - requiredLength), requiredLength);
+						segment.location = placingRange.location;
+						placed = true;
+						// reduce placement options
+						var resultingRanges = targetRange.CutOutRange(placingRange);
+						if (resultingRanges.Count == 0) {
+							orderedFreeRanges.RemoveAt(index);
+						} else {
+							orderedFreeRanges[index] = resultingRanges[0];
+							if (resultingRanges.Count == 2) {
+								orderedFreeRanges.Insert(index + 1, resultingRanges[1]);
+							}
+						}
+					}
+					if (remainingTries <= 0) return false;
+				}
+			}
+			return true;
+		}
+
+	}
 }
