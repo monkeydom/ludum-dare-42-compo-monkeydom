@@ -85,7 +85,7 @@ namespace MonkeydomSpecific {
 		}
 
 		public void UpdateAppearanceForCurrentValues() {
-			Debug.Log($"Update to: {this}");
+			// Debug.Log($"Update to: {this}");
 			textScript.text = $"{segmentData.segmentNumber}";
 			AdjustLength();
 		}

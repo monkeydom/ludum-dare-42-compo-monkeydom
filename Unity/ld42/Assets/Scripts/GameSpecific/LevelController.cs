@@ -10,6 +10,8 @@ namespace MonkeydomSpecific {
 		[Header("Outlets")]
 		public GameObject segmentPrefab;
 		public Material segmentBaseColor;
+		public Material[] segmentColorPalette;
+
 
 		public GameObject segmentsContainer;
 
@@ -29,6 +31,7 @@ namespace MonkeydomSpecific {
 			segments = new List<SegmentData>();
 			int location = 0;
 			int fileCount = Random.Range(3, 10);
+			fileCount = 19;
 			for (int index = 0; index < fileCount; index++) {
 				int segmentCount = Random.Range(3, 10);
 				for (int segmentIndex = 0; segmentIndex < segmentCount; segmentIndex++) {
@@ -47,13 +50,17 @@ namespace MonkeydomSpecific {
 
 		void GenerateColors(int upTo) {
 			segmentColor = Enumerable.Range(1, upTo).Select(x => {
-				Material mat = Instantiate(segmentBaseColor);
-				Color color = mat.color;
-				float h, s, v;
-				Color.RGBToHSV(color, out h, out s, out v);
-				h = Random.Range(0, 1.0f);
-				mat.color = Color.HSVToRGB(h, s, v);
-				return mat;
+				if (segmentColorPalette.Count() > 0) {
+					return segmentColorPalette[x % segmentColorPalette.Count()];
+				} else {
+					Material mat = Instantiate(segmentBaseColor);
+					Color color = mat.color;
+					float h, s, v;
+					Color.RGBToHSV(color, out h, out s, out v);
+					h = Random.Range(0, 1.0f);
+					mat.color = Color.HSVToRGB(h, s, v);
+					return mat;
+				}
 			}).ToList<Material>();
 		}
 
@@ -75,7 +82,7 @@ namespace MonkeydomSpecific {
 			transform.parent = gameObject.transform;
 
 			foreach (SegmentData segment in segments) {
-				GameObject segmentObject = Instantiate<GameObject>(segmentPrefab, transform);
+				GameObject segmentObject = Instantiate(segmentPrefab, transform);
 				var sb = segmentObject.GetComponent<SegmentBehavior>();
 				sb.SetSegmentData(segment);
 				segmentObject.transform.localPosition = PositionForLocation(segment.location);

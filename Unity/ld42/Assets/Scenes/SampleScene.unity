@@ -196,7 +196,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   segmentPrefab: {fileID: 1801971644508168, guid: 434644ec2a44c4d30b74737b4176c55b,
     type: 2}
-  segmentBaseColor: {fileID: 2100000, guid: 9b303954f2fe945be8a2ae3c8f9a65ea, type: 2}
+  segmentBaseColor: {fileID: 2100000, guid: 26fdb01972a20409c8cf819dbc56237d, type: 2}
+  segmentColorPalette:
+  - {fileID: 2100000, guid: 26fdb01972a20409c8cf819dbc56237d, type: 2}
+  - {fileID: 2100000, guid: c103ac67de1744031b7fe7395b977555, type: 2}
+  - {fileID: 2100000, guid: 9170bc877b6cd437aaa40c49695954c3, type: 2}
+  - {fileID: 2100000, guid: bb64cf1a927b9412cb3c6e3a1e668cac, type: 2}
+  - {fileID: 2100000, guid: 93c6b5b18272740339502f41a0980969, type: 2}
+  - {fileID: 2100000, guid: f33f92c9bed2044b08ab146b8b7a1c39, type: 2}
+  - {fileID: 2100000, guid: 54642336166c948b29ae130ecc1128e3, type: 2}
+  - {fileID: 2100000, guid: 6789a2b4f97414675bab402d10e7b78e, type: 2}
+  - {fileID: 2100000, guid: 92b5ed51448ac4a119f9043e7ec3ff0b, type: 2}
+  - {fileID: 2100000, guid: de5e3c93907474e0aad0a1abcd345752, type: 2}
+  - {fileID: 2100000, guid: 6e3d0755f2cec452fbd06b465420134d, type: 2}
+  - {fileID: 2100000, guid: 80ef7d4bfdb2d40208deda666a485005, type: 2}
+  - {fileID: 2100000, guid: 5f5be78ff4475474faa919a6887da8d7, type: 2}
+  - {fileID: 2100000, guid: fc363da81ffe34db0b34df4505c9057e, type: 2}
+  - {fileID: 2100000, guid: 518c9eb799f3c4a11ba2e3f2ae5d9b73, type: 2}
+  - {fileID: 2100000, guid: ef98824f50e1c4a79972e4a248323460, type: 2}
+  - {fileID: 2100000, guid: a28003ef9843340859307809892d50cb, type: 2}
   segmentsContainer: {fileID: 0}
 --- !u!1 &170076733
 GameObject:
@@ -264,21 +282,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 32.836002, y: -3.163, z: 15.341001}
---- !u!114 &219954486
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fileNumber: 1
-  segmentNumber: 1
-  segmentLength: 1
-  location: 0
 --- !u!1001 &223288790
 Prefab:
   m_ObjectHideFlags: 0
@@ -1092,6 +1095,17 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1052041048
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: 
+  m_EditorClassIdentifier: 
   fileNumber: 1
   segmentNumber: 1
   segmentLength: 1
@@ -1614,7 +1628,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ca17f7327cc34c7baf0db602fe2118d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1800997546
+--- !u!114 &1639161682
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
