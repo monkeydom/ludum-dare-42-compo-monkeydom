@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en-us">
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<style type="text/css">
+			header {
+				background: #1f2429;
+				margin: 0px;
+				padding: 20px;
+				text-align: center;
+			}
+			
+			body {
+				background:#172031;
+				margin:0px;
+				font-family: Helvetica neue, arial, sans-serif;
+				text-align: center;
+			}
+			
+			div#content {
+				padding: 00px 20px;
+			}
+			
+			#content a, #content .content-common-body a:visited {
+				color: #e53
+			}
+			
+			#content a:focus, #content a:hover,
+			#content a:visited:focus, #content a:visited:hover {
+				color: #eef2f7;
+				background: #e53
+			}
+			
+			a {
+				text-decoration: none;
+			}
+			
+			div#outerGame {
+				margin: 20px auto;
+				}
+					
+			div#gameContainer {
+				margin: 0 auto;
+			}
+			
+			.gameWrapper {
+				width: 800px;
+				height:600px;
+				}
+ }
+		</style>
+		<title>Running out of Space - Monkeydom</title>
+		<script src="ld42-1/Build/UnityLoader.js"></script>
+		<script>
+			var gameInstance = UnityLoader.instantiate("gameContainer", "ld42-1/Build/ld42-1.json");
+		</script>
+	</head>
+	<body>
+		<div id="outerGame" class="gameWrapper">
+		<div id="gameContainer"  class="gameWrapper"></div>
+		</div>
+	</body>
+</html>
