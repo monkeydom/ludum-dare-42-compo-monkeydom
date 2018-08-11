@@ -17,5 +17,13 @@ namespace MonkeydomSpecific {
 		void InitGame() {
 			Debug.Log("Here goes nothing");
 		}
+
+
+		private void Update() {
+			if (Input.anyKeyDown) {
+				FindObjectOfType<LevelController>().Start();
+			}
+		}
+
 	}
 }
