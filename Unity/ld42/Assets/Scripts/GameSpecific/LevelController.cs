@@ -127,12 +127,21 @@ namespace MonkeydomSpecific {
 			float enter = 0.0f;
 
 			int? potentialTargetLocation = null;
-			if (plane.Raycast(ray, out enter)) {
-				//Get the point that is clicked
-				Vector3 hitPoint = ray.GetPoint(enter);
+			if (selectedSegment) {
+				if (plane.Raycast(ray, out enter)) {
+					//Get the point that is clicked
+					Vector3 hitPoint = ray.GetPoint(enter);
 
-				Vector3 localPosition = segmentsContainer.transform.InverseTransformPoint(hitPoint);
-				potentialTargetLocation = LocationForPosition(localPosition);
+					Vector3 localPosition = segmentsContainer.transform.InverseTransformPoint(hitPoint);
+					potentialTargetLocation = LocationForPosition(localPosition);
+
+					if (potentialTargetLocation.HasValue) {
+						int? suggestedLocation = null;
+						if (!level.CanCopySegmentToLocation(selectedSegment.segmentData, potentialTargetLocation.Value, out suggestedLocation)) {
+							potentialTargetLocation = suggestedLocation;
+						}
+					}
+				}
 			}
 
 			if (!selectedSegment) {
@@ -153,13 +162,35 @@ namespace MonkeydomSpecific {
 				if (hoverSegment) {
 					SetSelectedSegment(hoverSegment);
 				} else if (selectedSegment) {
-					if (potentialTargetLocation.HasValue) {
-						selectedSegment.segmentData.location = potentialTargetLocation.Value;
-						selectedSegment.transform.localPosition = PositionForLocation(potentialTargetLocation.Value);
+					if (potentialTargetLocation.HasValue && !segmentUnderMouse) {
+						PlaceTemporarySegment(potentialTargetLocation.Value);
+					} else {
+						SetSelectedSegment(null);
 					}
+				}
+			}
+
+			if (Input.GetButtonUp("Fire1")) {
+				if (selectedSegment) {
+					if (potentialTargetLocation.HasValue && !segmentUnderMouse) {
+						PlaceTemporarySegment(potentialTargetLocation.Value);
+					}
+				}
+			}
+
+			if (Input.GetButtonDown("Fire2")) {
+				if (selectedSegment) {
 					SetSelectedSegment(null);
 				}
 			}
+
+		}
+
+		void PlaceTemporarySegment(int location) {
+			level.CopySegmentToLocation(selectedSegment.segmentData, location);
+			// TODO: make this time based and wait for the copy to have finished to do so
+			selectedSegment.transform.localPosition = PositionForLocation(location);
+			SetSelectedSegment(null);
 		}
 
 		void SetHoverSegment(SegmentBehavior segment) {

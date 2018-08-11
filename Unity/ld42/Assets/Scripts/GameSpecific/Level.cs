@@ -133,7 +133,74 @@ namespace MonkeydomSpecific {
 					if (remainingTries <= 0) return false;
 				}
 			}
+
+			SortSegments();
 			return true;
+		}
+
+		void SortSegments() {
+			segments.Sort((a, b) => a.location.CompareTo(b.location));
+		}
+
+		public int CurrentEnd {
+			get {
+				// TODO: return end - timing based things that have been eaten
+				return storageSpace;
+			}
+		}
+
+		public List<SegmentData> SegmentsSurroundingLocation(int location) {
+			List<SegmentData> result = new List<SegmentData> { null, null };
+			int segmentCount = segments.Count;
+			for (int index = 0; index < segmentCount; index++) {
+				SegmentData segment = segments[index];
+				if (segment.location < location) {
+					result[0] = segment;
+				}
+				if (segment.location >= location) {
+					result[1] = segment;
+					break;
+				}
+			}
+			return result;
+		}
+
+		public bool CanCopySegmentToLocation(SegmentData segment, int location, out int? suggestedLocation) {
+			suggestedLocation = null;
+
+			if (location < 0) {
+				return false;
+			}
+			if (location + segment.segmentLength > CurrentEnd) {
+				var earliestEndStart = segments[segments.Count - 1].PositionAfter;
+				if (CurrentEnd - earliestEndStart > segment.segmentLength) {
+					suggestedLocation = CurrentEnd - segment.segmentLength;
+				}
+				return false;
+			}
+
+			var enclosingSegments = SegmentsSurroundingLocation(location);
+			// Debug.Log($"Enclosing Segments: {enclosingSegments[0]} - {location} - {enclosingSegments[1]}");
+			if (enclosingSegments[0] && enclosingSegments[0].PositionAfter > location) {
+				return false;
+			}
+			if (enclosingSegments[1] && enclosingSegments[1].location < location + segment.segmentLength) {
+				if (!enclosingSegments[0] || (enclosingSegments[1].location - enclosingSegments[0].PositionAfter) >= segment.segmentLength) {
+					int potentialLocation = enclosingSegments[1].location - segment.segmentLength;
+					if (potentialLocation >= 0) {
+						suggestedLocation = potentialLocation;
+					}
+				}
+				return false;
+			}
+
+			return true;
+		}
+
+		// TODO: make it take time and give a progress callback
+		public void CopySegmentToLocation(SegmentData segment, int location) {
+			segment.location = location;
+			SortSegments();
 		}
 
 	}

@@ -29,6 +29,12 @@ namespace MonkeydomSpecific {
 		public SegmentDataPartType partType;
 		public Level level;
 
+		public int PositionAfter {
+			get {
+				return location + segmentLength;
+			}
+		}
+
 		public override string ToString() {
 			return $"File{fileNumber}#{segmentNumber}-{segmentLength}";
 		}
