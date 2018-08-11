@@ -80,6 +80,7 @@ namespace MonkeydomSpecific {
 
 			foreach (SegmentData segment in segments) {
 				GameObject segmentObject = Instantiate(segmentPrefab, transform);
+				segmentObject.name = $"Seg_{segment}";
 				var sb = segmentObject.GetComponent<SegmentBehavior>();
 				sb.SetSegmentData(segment);
 				segmentObject.transform.localPosition = PositionForLocation(segment.location);
@@ -98,6 +99,18 @@ namespace MonkeydomSpecific {
 			int y = location / width;
 			var position = new Vector3(x, -y, 0);
 			return position;
+		}
+
+		int? LocationForPosition(Vector2 position) {
+			if (position.x < -0.5f || position.x > width + 0.5f) {
+				return null;
+			}
+			if (position.y > 0.5f) {
+				return null;
+			}
+
+			int result = (int)Mathf.Round(position.x - 0.5f) + width * (int)Mathf.Round(Mathf.Abs(position.y));
+			return result;
 		}
 
 		#endregion
@@ -120,6 +133,18 @@ namespace MonkeydomSpecific {
 				Transform objectHit = hit.transform;
 				segmentUnderMouse = objectHit.parent.GetComponentInParent<SegmentBehavior>();
 			}
+			// determine potential target
+			Plane plane = new Plane(Vector3.forward, 0);
+			float enter = 0.0f;
+
+			int? potentialTargetLocation = null;
+			if (plane.Raycast(ray, out enter)) {
+				//Get the point that is clicked
+				Vector3 hitPoint = ray.GetPoint(enter);
+
+				Vector3 localPosition = segmentsContainer.transform.InverseTransformPoint(hitPoint);
+				potentialTargetLocation = LocationForPosition(localPosition);
+			}
 
 			if (!selectedSegment) {
 				SetHoverSegment(segmentUnderMouse);
@@ -127,15 +152,9 @@ namespace MonkeydomSpecific {
 				if (segmentUnderMouse) {
 					temporaryMoveSegment.SetActive(false);
 				} else {
-					Plane plane = new Plane(Vector3.forward, 0);
-					float enter = 0.0f;
-
-					if (plane.Raycast(ray, out enter)) {
-						//Get the point that is clicked
-						Vector3 hitPoint = ray.GetPoint(enter);
-
+					if (potentialTargetLocation.HasValue) {
 						//Move your cube GameObject to the point where you clicked
-						temporaryMoveSegment.transform.position = hitPoint;
+						temporaryMoveSegment.transform.localPosition = PositionForLocation(potentialTargetLocation.Value);
 						temporaryMoveSegment.SetActive(true);
 					}
 				}
@@ -145,6 +164,10 @@ namespace MonkeydomSpecific {
 				if (hoverSegment) {
 					SetSelectedSegment(hoverSegment);
 				} else if (selectedSegment) {
+					if (potentialTargetLocation.HasValue) {
+						selectedSegment.segmentData.location = potentialTargetLocation.Value;
+						selectedSegment.transform.localPosition = PositionForLocation(potentialTargetLocation.Value);
+					}
 					SetSelectedSegment(null);
 				}
 			}

@@ -21,7 +21,7 @@ namespace MonkeydomSpecific {
 		public int location = 0;
 
 		public override string ToString() {
-			return $"{base.ToString()} {fileNumber}, {segmentNumber}, {segmentLength}";
+			return $"File{fileNumber}#{segmentNumber}-{segmentLength}";
 		}
 #if UNITY_EDITOR
 		protected virtual void OnValidate() {
@@ -103,7 +103,7 @@ namespace MonkeydomSpecific {
 		}
 
 		public override string ToString() {
-			return $"{base.ToString()} {segmentData}";
+			return $"#[{segmentData}]";
 		}
 
 
