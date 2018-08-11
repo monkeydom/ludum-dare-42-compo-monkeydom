@@ -25,6 +25,7 @@ namespace MonkeydomSpecific {
 		public void Start() {
 			InitializeSegments();
 			GenerateSegmentObjects();
+			GameController.Instance.DebugOutput($"Segments: {segments.Count()}\nFiles: {segments.Last().fileNumber}");
 		}
 
 		void InitializeSegments() {

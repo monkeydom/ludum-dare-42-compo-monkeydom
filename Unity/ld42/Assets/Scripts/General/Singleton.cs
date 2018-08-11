@@ -2,18 +2,27 @@
 
 namespace MonkeydomGeneral {
 
-	public class Singleton : MonoBehaviour {
-
-		private static Singleton Instance = null;
-
-		virtual public void Awake() {
-			if (Instance) {
-				Destroy(gameObject);
-			} else {
-				DontDestroyOnLoad(gameObject);
+	public abstract class Singleton<T> : Singleton where T : Singleton<T> {
+		public static T Instance {
+			get {
+				return _Instance;
 			}
 		}
 
+		private static T _Instance;
+
+		virtual public void Awake() {
+			if (_Instance) {
+				Destroy(gameObject);
+			} else {
+				DontDestroyOnLoad(gameObject);
+				_Instance = (T)this;
+			}
+		}
+
+	}
+
+	public class Singleton : MonoBehaviour {
 	}
 
 }

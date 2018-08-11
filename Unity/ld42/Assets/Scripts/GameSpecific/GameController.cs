@@ -1,11 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 using MonkeydomGeneral;
 
 namespace MonkeydomSpecific {
-	public class GameController : Singleton {
+	public class GameController : Singleton<GameController> {
+
+		[Header("Outlets")]
+		public TextMeshPro debugOutput;
 
 		public override void Awake() {
 			base.Awake();
@@ -23,6 +27,10 @@ namespace MonkeydomSpecific {
 			if (Input.anyKeyDown) {
 				FindObjectOfType<LevelController>().Start();
 			}
+		}
+
+		public void DebugOutput(string str) {
+			debugOutput.text = str;
 		}
 
 	}
