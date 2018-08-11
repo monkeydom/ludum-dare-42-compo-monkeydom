@@ -62,6 +62,7 @@ namespace MonkeydomSpecific {
 
 		[Header("Outlets")]
 		public Transform segmentTransform;
+		public Transform segmentTransform2;
 		public TextMeshPro textScript;
 
 		Animator selectionAnimator;
@@ -110,11 +111,22 @@ namespace MonkeydomSpecific {
 		public void UpdateAppearanceForCurrentValues() {
 			// Debug.Log($"Update to: {this}");
 			textScript.text = $"{segmentData.segmentNumber}";
-			AdjustLength();
+			AdjustLengthForIntRange(new IntRange(segmentData.location, segmentData.segmentLength));
 		}
 
-		void AdjustLength() {
-			segmentTransform.localScale = new Vector3(segmentData.segmentLength, 1, 1);
+		public void AdjustLengthForIntRange(IntRange range) {
+			if (segmentData.level == null) {
+				return;
+			}
+			var extents = segmentData.level.ExtentsForIntRange(range);
+			segmentTransform.localScale = new Vector3(extents[0].length, 1, 1);
+			if (extents[1] != null) {
+				segmentTransform2.gameObject.SetActive(true);
+				segmentTransform2.localScale = new Vector3(extents[1].length, 1, 1);
+				segmentTransform2.localPosition = segmentTransform.localPosition + ((float)segmentData.level.width - (float)extents[0].length) * Vector3.left + Vector3.down;
+			} else {
+				segmentTransform2.gameObject.SetActive(false);
+			}
 		}
 
 		public override string ToString() {

@@ -149,6 +149,21 @@ namespace MonkeydomSpecific {
 			}
 		}
 
+		public List<IntRange> ExtentsForIntRange(IntRange range) {
+			int positionAfter = range.PositionAfter;
+			var result = new List<IntRange> { range, null };
+
+			int startLine = range.location / width;
+			int endLine = (range.PositionAfter - 1) / width;
+
+			if (startLine != endLine) {
+				int lengthInSameLine = width - (range.location % width);
+				result[0].length = lengthInSameLine;
+				result[1] = new IntRange(result[0].PositionAfter, positionAfter - result[0].PositionAfter);
+			}
+			return result;
+		}
+
 		public List<SegmentData> SegmentsSurroundingLocation(int location) {
 			List<SegmentData> result = new List<SegmentData> { null, null };
 			int segmentCount = segments.Count;

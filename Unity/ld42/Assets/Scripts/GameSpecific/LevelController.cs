@@ -69,7 +69,7 @@ namespace MonkeydomSpecific {
 				var sb = segmentObject.GetComponent<SegmentBehavior>();
 				sb.SetSegmentData(segment);
 				segmentObject.transform.localPosition = PositionForLocation(segment.location);
-				foreach (MeshRenderer renderer in segmentObject.GetComponentsInChildren<MeshRenderer>()) {
+				foreach (MeshRenderer renderer in segmentObject.GetComponentsInChildren<MeshRenderer>(true)) {
 					if (renderer.gameObject.tag == "SegmentObject") {
 						renderer.sharedMaterial = segmentColor[segment.fileNumber];
 					}
@@ -148,12 +148,11 @@ namespace MonkeydomSpecific {
 				SetHoverSegment(segmentUnderMouse);
 			} else {
 				if (segmentUnderMouse) {
-					temporaryMoveSegment.SetActive(false);
+					UpdateTemporarySegmentPlacementIndication(null);
 				} else {
 					if (potentialTargetLocation.HasValue) {
 						//Move your cube GameObject to the point where you clicked
-						temporaryMoveSegment.transform.localPosition = PositionForLocation(potentialTargetLocation.Value);
-						temporaryMoveSegment.SetActive(true);
+						UpdateTemporarySegmentPlacementIndication(potentialTargetLocation.Value);
 					}
 				}
 			}
@@ -186,10 +185,22 @@ namespace MonkeydomSpecific {
 
 		}
 
+		void UpdateTemporarySegmentPlacementIndication(int? location) {
+			if (location.HasValue) {
+				var behavior = temporaryMoveSegment.GetComponent<SegmentBehavior>();
+				behavior.AdjustLengthForIntRange(new IntRange(location.Value, behavior.segmentData.segmentLength));
+				temporaryMoveSegment.transform.localPosition = PositionForLocation(location.Value);
+				temporaryMoveSegment.SetActive(true);
+			} else {
+				temporaryMoveSegment.SetActive(false);
+			}
+		}
+
 		void PlaceTemporarySegment(int location) {
 			level.CopySegmentToLocation(selectedSegment.segmentData, location);
 			// TODO: make this time based and wait for the copy to have finished to do so
 			selectedSegment.transform.localPosition = PositionForLocation(location);
+			selectedSegment.UpdateAppearanceForCurrentValues();
 			SetSelectedSegment(null);
 		}
 
@@ -219,12 +230,11 @@ namespace MonkeydomSpecific {
 				segment.selected = true;
 
 				temporaryMoveSegment = Instantiate(selectedSegment.gameObject, selectedSegment.transform.parent);
-				temporaryMoveSegment.transform.localPosition = temporaryMoveSegment.transform.localPosition - (Vector3.back * 0.5f);
-				temporaryMoveSegment.SetActive(false);
 				foreach (Collider col in temporaryMoveSegment.GetComponentsInChildren<Collider>()) {
 					col.enabled = false;
 				}
 				temporaryMoveSegment.name = "temporaryMoveSegment";
+				UpdateTemporarySegmentPlacementIndication(null);
 			} else {
 				if (temporaryMoveSegment) {
 					Destroy(temporaryMoveSegment);
