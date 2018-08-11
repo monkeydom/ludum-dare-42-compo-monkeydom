@@ -1314,23 +1314,6 @@ Transform:
   m_Father: {fileID: 60795565}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 24.053001, y: 148.434, z: -639.347}
---- !u!114 &844657927
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fileNumber: 1
-  segmentNumber: 1
-  segmentLength: 1
-  location: 0
-  partType: 0
-  level: {fileID: 0}
 --- !u!1 &985150629
 GameObject:
   m_ObjectHideFlags: 0
@@ -1522,7 +1505,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_text: Oh Hello!
+  m_text: Bring order to Chaos. Space for new level. No Scores or time Yet.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 70c6c9ae2c4ee490a96e178ac820c6da, type: 2}
   m_sharedMaterial: {fileID: 21165286896022306, guid: 70c6c9ae2c4ee490a96e178ac820c6da,
@@ -1591,10 +1574,10 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 3.7559414, w: 0}
   m_textInfo:
     textComponent: {fileID: 1128553840}
-    characterCount: 9
+    characterCount: 65
     spriteCount: 0
-    spaceCount: 1
-    wordCount: 2
+    spaceCount: 12
+    wordCount: 13
     linkCount: 0
     lineCount: 1
     pageCount: 1
@@ -2155,23 +2138,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1435800832}
   m_Mesh: {fileID: 0}
---- !u!114 &1478899010
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fileNumber: 1
-  segmentNumber: 1
-  segmentLength: 1
-  location: 0
-  partType: 0
-  level: {fileID: 0}
 --- !u!4 &1529228253 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4767401292904058, guid: 434644ec2a44c4d30b74737b4176c55b,
@@ -2353,6 +2319,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ca17f7327cc34c7baf0db602fe2118d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1720625291
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fileNumber: 1
+  segmentNumber: 1
+  segmentLength: 1
+  location: 0
+  partType: 0
+  level: {fileID: 0}
 --- !u!1 &1803831874
 GameObject:
   m_ObjectHideFlags: 0
@@ -2502,6 +2485,23 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1845405036}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1974867674
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fileNumber: 1
+  segmentNumber: 1
+  segmentLength: 1
+  location: 0
+  partType: 0
+  level: {fileID: 0}
 --- !u!1 &2092850295
 GameObject:
   m_ObjectHideFlags: 0
