@@ -10,6 +10,6 @@ public class RandomRotate : MonoBehaviour {
 	}
 
 	void FixedUpdate() {
-		transform.rotation = transform.rotation * Quaternion.EulerAngles(Random.Range(0, 0.01f), Random.Range(0, 0.01f), Random.Range(0, 0.01f));
+		transform.rotation = transform.rotation * Quaternion.Euler(Random.Range(0, 1f), Random.Range(0, 1f), Random.Range(0, 1f));
 	}
 }

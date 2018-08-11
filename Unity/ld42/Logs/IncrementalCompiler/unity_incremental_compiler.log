@@ -1,4 +1,0 @@
- (0,0): GetAnalyzersFromCompilation threw an exception: System.NullReferenceException: Object reference not set to an instance of an object
-  at UnityEditor.Compilation.CodeAnalyzerManager+<>c__DisplayClass5_1.<GetAnalyzersFromCompilation>b__1 (UnityEditor.Compilation.CodeAnalyzerManager+CompilationAnalyzerInfo a) [0x00000] in <a72d6ce58f2540fb9ad8d92d36fe3716>:0 
-  at System.Linq.Enumerable.SingleOrDefault[TSource] (System.Collections.Generic.IEnumerable`1[T] source, System.Func`2[T,TResult] predicate) [0x0002c] in <839a3cb835c04d14aeb58d83bb7bc4bd>:0 
-  at UnityEditor.Compilation.CodeAnalyzerManager.GetAnalyzersFromCompilation (System.String assemblyFilename, System.String[] unityCompilerArguments) [0x00214] in <a72d6ce58f2540fb9ad8d92d36fe3716>:0 
