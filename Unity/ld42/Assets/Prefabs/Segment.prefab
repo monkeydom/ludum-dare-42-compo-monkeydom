@@ -107,7 +107,7 @@ GameObject:
   - component: {fileID: 23277089066609052}
   - component: {fileID: 65117522155014450}
   m_Layer: 10
-  m_Name: Segment
+  m_Name: Segment2
   m_TagString: SegmentObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

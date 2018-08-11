@@ -328,7 +328,7 @@ Prefab:
         type: 2}
       propertyPath: segmentData
       value: 
-      objectReference: {fileID: 1120153626}
+      objectReference: {fileID: 1556570586}
     - target: {fileID: 1801971644508168, guid: 434644ec2a44c4d30b74737b4176c55b, type: 2}
       propertyPath: m_Name
       value: Segment (1)
@@ -371,23 +371,6 @@ Prefab:
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 434644ec2a44c4d30b74737b4176c55b, type: 2}
   m_IsPrefabAsset: 0
---- !u!114 &266673049
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fileNumber: 1
-  segmentNumber: 1
-  segmentLength: 1
-  location: 0
-  partType: 0
-  level: {fileID: 0}
 --- !u!1 &445666867
 GameObject:
   m_ObjectHideFlags: 0
@@ -832,6 +815,23 @@ MonoBehaviour:
   debugOutput: {fileID: 1435800834}
   statusText: {fileID: 1128553840}
   mainCamera: {fileID: 534669904}
+--- !u!114 &522690768
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fileNumber: 1
+  segmentNumber: 1
+  segmentLength: 1
+  location: 0
+  partType: 0
+  level: {fileID: 0}
 --- !u!1 &534669902
 GameObject:
   m_ObjectHideFlags: 0
@@ -1314,6 +1314,23 @@ Transform:
   m_Father: {fileID: 60795565}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 24.053001, y: 148.434, z: -639.347}
+--- !u!114 &844657927
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fileNumber: 1
+  segmentNumber: 1
+  segmentLength: 1
+  location: 0
+  partType: 0
+  level: {fileID: 0}
 --- !u!1 &985150629
 GameObject:
   m_ObjectHideFlags: 0
@@ -1467,23 +1484,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: -38.8, y: 0, z: 0}
---- !u!114 &1120153626
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fileNumber: 1
-  segmentNumber: 1
-  segmentLength: 1
-  location: 0
-  partType: 0
-  level: {fileID: 0}
 --- !u!1 &1128553839
 GameObject:
   m_ObjectHideFlags: 0
@@ -1770,23 +1770,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1143892992}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &1265194336
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fileNumber: 1
-  segmentNumber: 1
-  segmentLength: 1
-  location: 0
-  partType: 0
-  level: {fileID: 0}
 --- !u!1 &1295070309
 GameObject:
   m_ObjectHideFlags: 0
@@ -2172,11 +2155,45 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1435800832}
   m_Mesh: {fileID: 0}
+--- !u!114 &1478899010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fileNumber: 1
+  segmentNumber: 1
+  segmentLength: 1
+  location: 0
+  partType: 0
+  level: {fileID: 0}
 --- !u!4 &1529228253 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4767401292904058, guid: 434644ec2a44c4d30b74737b4176c55b,
     type: 2}
   m_PrefabInternal: {fileID: 223288790}
+--- !u!114 &1556570586
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fileNumber: 1
+  segmentNumber: 1
+  segmentLength: 1
+  location: 0
+  partType: 0
+  level: {fileID: 0}
 --- !u!1001 &1608176315
 Prefab:
   m_ObjectHideFlags: 0
@@ -2225,7 +2242,7 @@ Prefab:
         type: 2}
       propertyPath: segmentData
       value: 
-      objectReference: {fileID: 1265194336}
+      objectReference: {fileID: 522690768}
     - target: {fileID: 114774024491396650, guid: 434644ec2a44c4d30b74737b4176c55b,
         type: 2}
       propertyPath: m_havePropertiesChanged
@@ -2485,23 +2502,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1845405036}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &2015531488
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fileNumber: 1
-  segmentNumber: 1
-  segmentLength: 1
-  location: 0
-  partType: 0
-  level: {fileID: 0}
 --- !u!1 &2092850295
 GameObject:
   m_ObjectHideFlags: 0

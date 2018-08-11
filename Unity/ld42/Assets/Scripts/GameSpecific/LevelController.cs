@@ -230,7 +230,7 @@ namespace MonkeydomSpecific {
 				segment.selected = true;
 
 				temporaryMoveSegment = Instantiate(selectedSegment.gameObject, selectedSegment.transform.parent);
-				foreach (Collider col in temporaryMoveSegment.GetComponentsInChildren<Collider>()) {
+				foreach (Collider col in temporaryMoveSegment.GetComponentsInChildren<Collider>(true)) {
 					col.enabled = false;
 				}
 				temporaryMoveSegment.name = "temporaryMoveSegment";
