@@ -40,16 +40,21 @@ namespace MonkeydomSpecific {
 
 	public class SegmentBehavior : MonoBehaviour {
 
-		[SerializeField]
 		public SegmentData segmentData;
+
+		public bool highlighted;
+		public bool selected;
 
 		[Header("Outlets")]
 		public Transform segmentTransform;
 		public TextMeshPro textScript;
 
+		Animator selectionAnimator;
+
 		// Use this for initialization
 		void Start() {
 			EnsureSegmentData();
+			selectionAnimator = GetComponent<Animator>();
 		}
 
 		public void SetSegmentData(SegmentData data) {
@@ -75,6 +80,9 @@ namespace MonkeydomSpecific {
 
 		// Update is called once per frame
 		void Update() {
+			// Todo: update somwhere else to be less expensive
+			selectionAnimator.SetBool("highlighted", highlighted);
+			selectionAnimator.SetBool("selected", selected);
 		}
 
 		void SetupSegment(int fileNumber, int segmentNumber, int segmentLength) {

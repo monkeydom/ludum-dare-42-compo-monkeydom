@@ -54,6 +54,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4767401292904058}
   - component: {fileID: 114167016340494146}
+  - component: {fileID: 95829467733439412}
   m_Layer: 0
   m_Name: Segment
   m_TagString: Untagged
@@ -217,6 +218,24 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!95 &95829467733439412
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1801971644508168}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: b017c5b70aae34083a5c44d39f660181, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &114167016340494146
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -229,6 +248,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   segmentData: {fileID: 0}
+  highlighted: 0
+  selected: 0
   segmentTransform: {fileID: 4910608531768136}
   textScript: {fileID: 114774024491396650}
 --- !u!114 &114774024491396650
@@ -319,7 +340,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 0}
-    characterCount: 2
+    characterCount: 1
     spriteCount: 0
     spaceCount: 0
     wordCount: 1
@@ -327,11 +348,11 @@ MonoBehaviour:
     lineCount: 1
     pageCount: 1
     materialCount: 1
-  m_havePropertiesChanged: 1
+  m_havePropertiesChanged: 0
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 1
+  m_isInputParsingRequired: 0
   m_inputSource: 3
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 23716603027373154}
