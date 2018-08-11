@@ -7,14 +7,17 @@ namespace MonkeydomSpecific {
 
 	public class LevelController : MonoBehaviour {
 
+		SegmentBehavior hoverSegment;
+		SegmentBehavior selectedSegment;
+
+		GameObject temporaryMoveSegment;
+
 		[Header("Outlets")]
+		public Camera mainCamera;
 		public GameObject segmentPrefab;
 		public Material segmentBaseColor;
 		public Material[] segmentColorPalette;
-
-
 		public GameObject segmentsContainer;
-
 		List<SegmentData> segments;
 
 		List<Material> segmentColor;
@@ -32,7 +35,6 @@ namespace MonkeydomSpecific {
 			segments = new List<SegmentData>();
 			int location = 0;
 			int fileCount = Random.Range(3, 10);
-			fileCount = 19;
 			for (int index = 0; index < fileCount; index++) {
 				int segmentCount = Random.Range(3, 10);
 				for (int segmentIndex = 0; segmentIndex < segmentCount; segmentIndex++) {
@@ -50,9 +52,10 @@ namespace MonkeydomSpecific {
 		}
 
 		void GenerateColors(int upTo) {
+			int start = Random.Range(0, 18);
 			segmentColor = Enumerable.Range(1, upTo).Select(x => {
 				if (segmentColorPalette.Count() > 0) {
-					return segmentColorPalette[x % segmentColorPalette.Count()];
+					return segmentColorPalette[(x + start) % segmentColorPalette.Count()];
 				} else {
 					Material mat = Instantiate(segmentBaseColor);
 					Color color = mat.color;
@@ -63,13 +66,6 @@ namespace MonkeydomSpecific {
 					return mat;
 				}
 			}).ToList<Material>();
-		}
-
-		Vector3 PositionForLocation(int location) {
-			int x = location % width;
-			int y = location / width;
-			var position = new Vector3(x, -y, 0);
-			return position;
 		}
 
 		void GenerateSegmentObjects() {
@@ -95,9 +91,102 @@ namespace MonkeydomSpecific {
 			}
 		}
 
-		// Update is called once per frame
-		void Update() {
+		#region Geometry stuff
 
+		Vector3 PositionForLocation(int location) {
+			int x = location % width;
+			int y = location / width;
+			var position = new Vector3(x, -y, 0);
+			return position;
+		}
+
+		#endregion
+
+
+		void Update() {
+			HandleInput();
+		}
+
+		void HandleInput() {
+			if (Input.GetButtonDown("Jump")) {
+				FindObjectOfType<LevelController>().Start();
+			}
+
+			Vector3 mousePosition = Input.mousePosition;
+			Ray ray = mainCamera.ScreenPointToRay(mousePosition);
+			RaycastHit hit;
+			SegmentBehavior segmentUnderMouse = null;
+			if (Physics.Raycast(ray, out hit, Mathf.Infinity, GameController.LayerMaskSegments)) {
+				Transform objectHit = hit.transform;
+				segmentUnderMouse = objectHit.parent.GetComponentInParent<SegmentBehavior>();
+			}
+
+			if (!selectedSegment) {
+				SetHoverSegment(segmentUnderMouse);
+			} else {
+				if (segmentUnderMouse) {
+					temporaryMoveSegment.SetActive(false);
+				} else {
+					Plane plane = new Plane(Vector3.forward, 0);
+					float enter = 0.0f;
+
+					if (plane.Raycast(ray, out enter)) {
+						//Get the point that is clicked
+						Vector3 hitPoint = ray.GetPoint(enter);
+
+						//Move your cube GameObject to the point where you clicked
+						temporaryMoveSegment.transform.position = hitPoint;
+						temporaryMoveSegment.SetActive(true);
+					}
+				}
+			}
+
+			if (Input.GetButtonDown("Fire1")) {
+				if (hoverSegment) {
+					SetSelectedSegment(hoverSegment);
+				} else if (selectedSegment) {
+					SetSelectedSegment(null);
+				}
+			}
+		}
+
+		void SetHoverSegment(SegmentBehavior segment) {
+			if (hoverSegment != segment) {
+				if (hoverSegment) {
+					hoverSegment.highlighted = false;
+				}
+				if (segment) {
+					segment.highlighted = true;
+				}
+				GameController.Instance.DebugOutput($"Hover change from {hoverSegment} to {segment}");
+				hoverSegment = segment;
+			}
+		}
+
+		void SetSelectedSegment(SegmentBehavior segment) {
+			if (selectedSegment != segment) {
+				if (selectedSegment) {
+					selectedSegment.selected = false;
+				}
+			}
+			selectedSegment = segment;
+			GameController.Instance.DebugOutput($"Selection change from {selectedSegment} to {segment}");
+			if (segment) {
+				SetHoverSegment(null);
+				segment.selected = true;
+
+				temporaryMoveSegment = Instantiate(selectedSegment.gameObject, selectedSegment.transform.parent);
+				temporaryMoveSegment.transform.localPosition = temporaryMoveSegment.transform.localPosition - (Vector3.back * 0.5f);
+				temporaryMoveSegment.SetActive(false);
+				foreach (Collider col in temporaryMoveSegment.GetComponentsInChildren<Collider>()) {
+					col.enabled = false;
+				}
+				temporaryMoveSegment.name = "temporaryMoveSegment";
+			} else {
+				if (temporaryMoveSegment) {
+					Destroy(temporaryMoveSegment);
+				}
+			}
 		}
 	}
 

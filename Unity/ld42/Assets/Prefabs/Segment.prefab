@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 33605296597007102}
   - component: {fileID: 222444624769797068}
   - component: {fileID: 114774024491396650}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: SegmentNumber
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4910608531768136}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: SegmentScaleContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -55,7 +55,7 @@ GameObject:
   - component: {fileID: 4767401292904058}
   - component: {fileID: 114167016340494146}
   - component: {fileID: 95829467733439412}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Segment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -73,7 +73,7 @@ GameObject:
   - component: {fileID: 33007613760044712}
   - component: {fileID: 23277089066609052}
   - component: {fileID: 65117522155014450}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Segment
   m_TagString: SegmentObject
   m_Icon: {fileID: 0}
@@ -348,12 +348,12 @@ MonoBehaviour:
     lineCount: 1
     pageCount: 1
     materialCount: 1
-  m_havePropertiesChanged: 0
+  m_havePropertiesChanged: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 0
-  m_inputSource: 3
+  m_isInputParsingRequired: 1
+  m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 23716603027373154}
   m_subTextObjects:

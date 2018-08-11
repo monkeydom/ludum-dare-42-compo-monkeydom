@@ -25,36 +25,7 @@ namespace MonkeydomSpecific {
 			Debug.Log($"Here goes nothing {Camera.main}");
 		}
 
-		private SegmentBehavior previousSegment;
-
 		void Update() {
-			if (Input.GetButtonDown("Jump")) {
-				FindObjectOfType<LevelController>().Start();
-			}
-
-			Vector3 mousePosition = Input.mousePosition;
-			Ray ray = mainCamera.ScreenPointToRay(mousePosition);
-			RaycastHit hit;
-			if (Physics.Raycast(ray, out hit)) {
-				Transform objectHit = hit.transform;
-				DebugOutput($" {ray} hit {hit} {objectHit.name}");
-				SegmentBehavior behavior = objectHit.parent.GetComponentInParent<SegmentBehavior>();
-				if (behavior != previousSegment) {
-					if (previousSegment) {
-						previousSegment.highlighted = false;
-					}
-					if (behavior) {
-						behavior.highlighted = true;
-					}
-					previousSegment = behavior;
-				}
-			}
-
-			if (Input.GetButtonDown("Fire1")) {
-				if (previousSegment) {
-					previousSegment.selected = !previousSegment.selected;
-				}
-			}
 		}
 
 		public void DebugOutput(string str) {
@@ -72,5 +43,16 @@ namespace MonkeydomSpecific {
 				Debug.Log($"Status Text: {str}");
 			}
 		}
+
+
+		#region Statics
+
+		public static int LayerMaskSegments {
+			get {
+				return 1 << 10;
+			}
+		}
+
+		#endregion
 	}
 }
