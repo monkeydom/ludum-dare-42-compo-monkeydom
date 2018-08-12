@@ -294,7 +294,8 @@ namespace MonkeydomSpecific {
 		}
 
 		void ScoreLevel() {
-
+			int scoreToAdd = level.files.Aggregate(0, (memo, file) => memo + file.score);
+			score += scoreToAdd;
 		}
 
 		void Update() {
@@ -337,7 +338,7 @@ namespace MonkeydomSpecific {
 		}
 
 		void UpdateScoreAndStage() {
-			string text = $"Stage {stage} - {score.ToString("000000")}";
+			string text = $"Stage {stage} - {score.ToString("# ### 000")}";
 
 			if (state == LevelControllerState.GameOver) {
 				text = $"Game Over - {text}";
@@ -367,7 +368,7 @@ namespace MonkeydomSpecific {
 			int? potentialTargetLocation = null;
 			Vector3 localMousePosition = Vector3.zero;
 			if (plane.Raycast(ray, out enter)) {
-				//Get the point that is clicked
+				//Get the point that is under the pointer
 				Vector3 hitPoint = ray.GetPoint(enter);
 
 				localMousePosition = segmentsContainer.transform.InverseTransformPoint(hitPoint);
@@ -403,11 +404,13 @@ namespace MonkeydomSpecific {
 			if (!selectedSegment) {
 				SetHoverSegment(segmentUnderMouse);
 			} else {
-				if (temporaryMoveSegment && temporaryMoveSegment.activeSelf && (temporaryMoveSegment.transform.localPosition - localMousePosition).magnitude > 3.0) {
+				if (temporaryMoveSegment && temporaryMoveSegment.activeSelf &&
+					(temporaryMoveSegment.transform.localPosition - localMousePosition).magnitude > 3.0 &&
+					!potentialTargetLocation.HasValue) {
 					UpdateTemporarySegmentPlacementIndication(null);
 				} else {
 					if (potentialTargetLocation.HasValue) {
-						//Move your cube GameObject to the point where you clicked
+						//Move your segment to the point where you clicked
 						UpdateTemporarySegmentPlacementIndication(potentialTargetLocation.Value);
 					}
 				}
