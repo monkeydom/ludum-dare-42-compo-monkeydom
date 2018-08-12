@@ -32,7 +32,7 @@ namespace MonkeydomSpecific {
 
 		// Use this for initialization
 		public void Start() {
-			level = new Level(34, 34 * 20 + 13, Random.Range(3, 5), Random.Range(16, 60));
+			level = new Level(16, 12 * 20 + 13, Random.Range(3, 5), Random.Range(16, 60));
 			//			InitializeSegments();
 			GenerateColors(level.files.Count);
 			GenerateSegmentObjects();
