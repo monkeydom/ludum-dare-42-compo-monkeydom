@@ -59,18 +59,18 @@ namespace MonkeydomSpecific {
 		}
 
 		void GenerateLevel(int stage) {
-			int maxFileCount = Mathf.Min(stage + 1, 7);
-			int fileCount = Random.Range(Mathf.Max(2, maxFileCount - 2), maxFileCount);
+			int maxFileCount = Mathf.Min(stage / 3 + 1, 7);
+			int fileCount = Random.Range(Mathf.Max(3, maxFileCount - 2), maxFileCount);
 			int width = Mathf.Min(12 + stage / 2, 30);
-			int maxFileLength = Mathf.Min(width * 2 - 1, Mathf.Max(stage * 3, 12));
+			int maxFileLength = Mathf.Min(width * 3 - 1, Mathf.Max(stage * 8, 12));
 			int storageSpace = width * 6 + stage * 17;
 			storageSpace = Mathf.FloorToInt(Random.Range(storageSpace, storageSpace * 1.4f));
 			storageSpace = Mathf.Min(27 * width - 1, storageSpace);
 			float precentageOfDyingSpace = Random.Range(0.7f, Mathf.Min(0.7f + stage * 0.06f, 0.95f));
 			state = LevelControllerState.Running;
-			float timePerDie = Mathf.Max(0.4f, (3.5f - Mathf.Log(stage) * 0.9f));
+			float timePerDie = Mathf.Max(0.4f, (3.5f - Mathf.Log(stage) * 1.2f));
 
-			maxFileLength = Mathf.Min(maxFileLength, (storageSpace - 2 * width) / fileCount);
+			maxFileLength = Mathf.Min(maxFileLength, (storageSpace - 1 * width) / fileCount);
 
 			Debug.Log($"stage: {stage} width: {width}, storageSpace: {storageSpace}, fileCount: {fileCount}, maxFileLength: {maxFileLength}, timePerTile: {timePerDie}");
 			level = new Level(width, storageSpace, fileCount, maxFileLength, precentageOfDyingSpace, timePerDie);
