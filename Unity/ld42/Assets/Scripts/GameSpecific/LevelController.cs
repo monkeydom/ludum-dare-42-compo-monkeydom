@@ -49,6 +49,8 @@ namespace MonkeydomSpecific {
 
 		List<DeadStorageBehavior> deadStorageBehaviors;
 
+		float lastBlinktime;
+
 		// Use this for initialization
 		public void Start() {
 			StartGame();
@@ -306,6 +308,14 @@ namespace MonkeydomSpecific {
 				float dyingMemoryPosition = level.dyingMemoryPosition;
 				if (dyingMemoryPosition < level.storageSpace) {
 					int deadStorageIndex = (int)Mathf.Floor(dyingMemoryPosition);
+					int distance = deadStorageIndex - level.segments.Last().PositionAfter;
+					if (distance < 6) {
+						float timing = Mathf.Max(0.2f, 0.3f * distance);
+						if (lastBlinktime + timing < Time.time) {
+							lastBlinktime = Time.time;
+							BorderLeft.parent.GetComponent<BlinkBehavior>().Blink();
+						}
+					}
 					int localIndex = deadStorageIndex - level.eventualStorageSpace;
 					deadStorageBehaviors[localIndex].SetProgress(1.0f - (dyingMemoryPosition - deadStorageIndex));
 				}
