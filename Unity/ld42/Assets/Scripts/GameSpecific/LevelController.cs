@@ -241,6 +241,35 @@ namespace MonkeydomSpecific {
 		}
 
 		int? LocationForPosition(Vector2 position) {
+			int currentLastPosition = level.CurrentEnd;
+			int maxRowCount = Mathf.CeilToInt(currentLastPosition / level.width);
+			int currentLastRowWidth = currentLastPosition % level.width;
+
+
+			// clamp to boundaries first
+			float margin = 5.0f;
+			if (position.x < 0.0f && position.x > -margin) {
+				position.x = 0.0f;
+			}
+
+			if (position.x > level.width && position.x < level.width + margin) {
+				position.x = level.width - 0.5f;
+			}
+
+			if (position.y > 0.0f && position.y < margin) {
+				position.y = 0.0f;
+			}
+
+			int relevantRowCount = maxRowCount;
+			if (position.x > currentLastRowWidth) {
+				relevantRowCount -= 1;
+			}
+
+			if (position.y < -relevantRowCount && position.y > -relevantRowCount - margin) {
+				position.y = -relevantRowCount;
+			}
+
+			// now check
 			if (position.x < -0.5f || position.x > level.width + 0.5f) {
 				return null;
 			}
