@@ -36,6 +36,7 @@ namespace MonkeydomSpecific {
 		public Material[] segmentColorPalette;
 		public GameObject segmentsContainer;
 		public GameObject fileStatusContainer;
+		public GameObject gameOver;
 
 		[Space(5)]
 		public Transform BorderLeft;
@@ -50,6 +51,7 @@ namespace MonkeydomSpecific {
 		List<DeadStorageBehavior> deadStorageBehaviors;
 
 		float lastBlinktime;
+		int skipAllowance;
 
 		// Use this for initialization
 		public void Start() {
@@ -83,7 +85,9 @@ namespace MonkeydomSpecific {
 		}
 
 		public void StartGame() {
+			gameOver.SetActive(false);
 			stage = 1;
+			skipAllowance = 10;
 			GenerateLevel(stage);
 		}
 
@@ -288,6 +292,7 @@ namespace MonkeydomSpecific {
 		void HandleGameOver() {
 			state = LevelControllerState.GameOver;
 			UpdateScoreAndStage();
+			gameOver.SetActive(true);
 		}
 
 		void StartNextStage() {
@@ -332,7 +337,9 @@ namespace MonkeydomSpecific {
 
 			if (Input.GetButtonDown("Jump")) {
 				if (state == LevelControllerState.Running) {
-					StartNextStage();
+					if (skipAllowance-- > 0) {
+						StartNextStage();
+					}
 				} else {
 					StartGame();
 				}
