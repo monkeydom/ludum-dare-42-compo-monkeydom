@@ -26,6 +26,8 @@ namespace MonkeydomSpecific {
 
 		public int location = 0;
 
+		public int? temporaryTargetCopyPlacementLocation;
+
 		public SegmentDataPartType partType;
 		public Level level;
 

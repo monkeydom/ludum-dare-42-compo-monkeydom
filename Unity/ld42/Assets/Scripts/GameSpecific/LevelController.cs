@@ -354,10 +354,27 @@ namespace MonkeydomSpecific {
 				}
 			}
 
+			// clear segment unter mouse if temporary segment is in the way
+			if (temporaryMoveSegment && temporaryMoveSegment.activeSelf) {
+				foreach (Collider col in temporaryMoveSegment.GetComponentsInChildren<Collider>(true)) {
+					col.enabled = true;
+				}
+				if (Physics.Raycast(ray, out hit, Mathf.Infinity, GameController.LayerMaskSegments)) {
+					Transform objectHit = hit.transform;
+					var hitGameObject = objectHit.parent.GetComponentInParent<SegmentBehavior>().gameObject;
+					if (hitGameObject == temporaryMoveSegment) {
+						segmentUnderMouse = null;
+					}
+				}
+				foreach (Collider col in temporaryMoveSegment.GetComponentsInChildren<Collider>(true)) {
+					col.enabled = false;
+				}
+			}
+
 			if (!selectedSegment) {
 				SetHoverSegment(segmentUnderMouse);
 			} else {
-				if (segmentUnderMouse) {
+				if (temporaryMoveSegment && temporaryMoveSegment.activeSelf && (temporaryMoveSegment.transform.localPosition - localMousePosition).magnitude > 3.0) {
 					UpdateTemporarySegmentPlacementIndication(null);
 				} else {
 					if (potentialTargetLocation.HasValue) {
@@ -373,8 +390,8 @@ namespace MonkeydomSpecific {
 					lastClickDownTime = Time.realtimeSinceStartup;
 					lastClickDownLocation = localMousePosition;
 				} else if (selectedSegment) {
-					if (potentialTargetLocation.HasValue && !segmentUnderMouse) {
-						PlaceTemporarySegment(potentialTargetLocation.Value);
+					if (temporaryMoveSegment.activeSelf) {
+						PlaceTemporarySegment();
 					} else {
 						SetSelectedSegment(null);
 					}
@@ -383,11 +400,13 @@ namespace MonkeydomSpecific {
 
 			if (Input.GetButtonUp("Fire1")) {
 				if (selectedSegment) {
-					bool allowDrag = (Time.realtimeSinceStartup - lastClickDownTime) > 1.0f / 6.0f ||
-									 (localMousePosition - lastClickDownLocation).magnitude > 2.0;
+					bool allowDrag = (Time.realtimeSinceStartup - lastClickDownTime) > 1.0f / 5.0f ||
+									 (localMousePosition - lastClickDownLocation).magnitude > 0.75;
 
-					if (potentialTargetLocation.HasValue && !segmentUnderMouse && allowDrag) {
-						PlaceTemporarySegment(potentialTargetLocation.Value);
+					if (temporaryMoveSegment.activeSelf && allowDrag) {
+						PlaceTemporarySegment();
+					} else if (Time.realtimeSinceStartup - lastClickDownTime > 1.0f / 2.0f) {
+						SetSelectedSegment(null);
 					}
 				}
 			}
@@ -402,16 +421,19 @@ namespace MonkeydomSpecific {
 
 		void UpdateTemporarySegmentPlacementIndication(int? location) {
 			if (location.HasValue) {
+				selectedSegment.segmentData.temporaryTargetCopyPlacementLocation = location.Value;
 				var behavior = temporaryMoveSegment.GetComponent<SegmentBehavior>();
 				behavior.AdjustLengthForIntRange(new IntRange(location.Value, behavior.segmentData.segmentLength));
 				temporaryMoveSegment.transform.localPosition = PositionForLocation(location.Value);
 				temporaryMoveSegment.SetActive(true);
 			} else {
+				selectedSegment.segmentData.temporaryTargetCopyPlacementLocation = null;
 				temporaryMoveSegment.SetActive(false);
 			}
 		}
 
-		void PlaceTemporarySegment(int location) {
+		void PlaceTemporarySegment() {
+			int location = selectedSegment.segmentData.temporaryTargetCopyPlacementLocation.Value;
 			level.CopySegmentToLocation(selectedSegment.segmentData, location);
 			// TODO: make this time based and wait for the copy to have finished to do so
 			selectedSegment.transform.localPosition = PositionForLocation(location);
