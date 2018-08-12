@@ -470,6 +470,7 @@ namespace MonkeydomSpecific {
 				}
 				temporaryMoveSegment.name = "temporaryMoveSegment";
 				UpdateTemporarySegmentPlacementIndication(null);
+				segment.ShowClick();
 			} else {
 				if (temporaryMoveSegment) {
 					Destroy(temporaryMoveSegment);

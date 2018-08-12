@@ -65,6 +65,8 @@ namespace MonkeydomSpecific {
 		public Transform segmentTransform2;
 		public TextMeshPro textScript;
 
+		public Material material;
+
 		Animator selectionAnimator;
 
 		// Use this for initialization
@@ -92,6 +94,59 @@ namespace MonkeydomSpecific {
 			if (!segmentData) {
 				SetSegmentData(new SegmentData());
 			}
+		}
+
+		IEnumerator ShowClickCoroutine() {
+			if (!material) {
+				foreach (MeshRenderer renderer in GetComponentsInChildren<MeshRenderer>(true)) {
+					if (renderer.gameObject.tag == "SegmentObject") {
+						material = renderer.sharedMaterial;
+						break;
+					}
+				}
+			}
+
+			Color sourceColor = material.color;
+			Color targetColor = Color.white;
+			float startTime = Time.realtimeSinceStartup;
+
+			float now = Time.realtimeSinceStartup;
+			float duration = 0.10f;
+			while (now < startTime + duration) {
+				foreach (MeshRenderer renderer in GetComponentsInChildren<MeshRenderer>(true)) {
+					if (renderer.gameObject.tag == "SegmentObject") {
+						renderer.material.color = Color.Lerp(sourceColor, targetColor, (now - startTime) / (duration * 1.1f));
+					}
+				}
+				yield return null;
+				now = Time.realtimeSinceStartup;
+			}
+			float targetTime = startTime + duration + duration * 2.0f;
+			while (now < targetTime) {
+				foreach (MeshRenderer renderer in GetComponentsInChildren<MeshRenderer>(true)) {
+					if (renderer.gameObject.tag == "SegmentObject") {
+						renderer.material.color = Color.Lerp(sourceColor, targetColor, (targetTime - now) / (duration * 2.0f));
+					}
+				}
+				yield return null;
+				now = Time.realtimeSinceStartup;
+			}
+
+			while (now < targetTime) {
+				foreach (MeshRenderer renderer in GetComponentsInChildren<MeshRenderer>(true)) {
+					if (renderer.gameObject.tag == "SegmentObject") {
+						Material byebye = renderer.material;
+						renderer.sharedMaterial = material;
+						Destroy(byebye);
+					}
+				}
+			}
+
+
+		}
+
+		public void ShowClick() {
+			StartCoroutine(ShowClickCoroutine());
 		}
 
 		// Update is called once per frame
