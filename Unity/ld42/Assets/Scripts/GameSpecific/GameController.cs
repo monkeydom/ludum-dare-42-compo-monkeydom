@@ -26,6 +26,7 @@ namespace MonkeydomSpecific {
 		}
 
 		void InitGame() {
+			startScreen.SetActive(true);
 		}
 
 		void Update() {
