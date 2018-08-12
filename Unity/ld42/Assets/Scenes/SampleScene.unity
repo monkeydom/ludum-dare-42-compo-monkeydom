@@ -199,7 +199,8 @@ MonoBehaviour:
     type: 2}
   deadStoragePrefab: {fileID: 1903080753168138, guid: 50f712cc46c9541d6b2c8a86dcebf52d,
     type: 2}
-  fileStatusPrefab: {fileID: 0}
+  fileStatusPrefab: {fileID: 1595001424883780, guid: dbf1543d06efd404e9975ee1abc5df34,
+    type: 2}
   segmentBaseColor: {fileID: 2100000, guid: 26fdb01972a20409c8cf819dbc56237d, type: 2}
   segmentColorPalette:
   - {fileID: 2100000, guid: 26fdb01972a20409c8cf819dbc56237d, type: 2}
@@ -226,6 +227,23 @@ MonoBehaviour:
   BorderTop: {fileID: 2092850296}
   BorderBottomLong: {fileID: 453041566}
   BorderBottomShort: {fileID: 1143892993}
+--- !u!114 &106531477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fileNumber: 1
+  segmentNumber: 1
+  segmentLength: 1
+  location: 0
+  partType: 0
+  level: {fileID: 0}
 --- !u!1 &170076733
 GameObject:
   m_ObjectHideFlags: 0
@@ -472,7 +490,7 @@ Prefab:
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 434644ec2a44c4d30b74737b4176c55b, type: 2}
   m_IsPrefabAsset: 0
---- !u!114 &415717865
+--- !u!114 &367672531
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1563,12 +1581,6 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: 
   m_EditorClassIdentifier: 
-  fileNumber: 1
-  segmentNumber: 1
-  segmentLength: 1
-  location: 0
-  partType: 0
-  level: {fileID: 0}
 --- !u!1 &985150629
 GameObject:
   m_ObjectHideFlags: 0
@@ -1656,23 +1668,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 985150629}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &1028236238
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fileNumber: 1
-  segmentNumber: 1
-  segmentLength: 1
-  location: 0
-  partType: 0
-  level: {fileID: 0}
 --- !u!1001 &1060210040
 Prefab:
   m_ObjectHideFlags: 0
@@ -1755,6 +1750,10 @@ Prefab:
     - target: {fileID: 114208573465938706, guid: dbf1543d06efd404e9975ee1abc5df34,
         type: 2}
       propertyPath: m_isInputParsingRequired
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1595001424883780, guid: dbf1543d06efd404e9975ee1abc5df34, type: 2}
+      propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents:
@@ -3022,6 +3021,11 @@ Prefab:
       propertyPath: segmentData
       value: 
       objectReference: {fileID: 875756491}
+    - target: {fileID: 33605296597007102, guid: 434644ec2a44c4d30b74737b4176c55b,
+        type: 2}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 434644ec2a44c4d30b74737b4176c55b, type: 2}
   m_IsPrefabAsset: 0
@@ -3133,12 +3137,6 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: 
   m_EditorClassIdentifier: 
-  fileNumber: 1
-  segmentNumber: 1
-  segmentLength: 1
-  location: 0
-  partType: 0
-  level: {fileID: 0}
 --- !u!1 &1803831874
 GameObject:
   m_ObjectHideFlags: 0

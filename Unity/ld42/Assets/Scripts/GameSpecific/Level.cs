@@ -20,7 +20,7 @@ namespace MonkeydomSpecific {
 			int segmentIndex = 0;
 			int remainingLength = fileLength;
 			while (remainingLength > 0) {
-				int segmentLength = Random.Range(1, System.Math.Min(remainingLength, 16));
+				int segmentLength = Random.Range(1, System.Math.Min(remainingLength, level.width - 8));
 				if (segmentLength == remainingLength && segmentIndex == 0) {
 					segmentLength = Random.Range(1, segmentLength - 1);
 				}
@@ -154,10 +154,9 @@ namespace MonkeydomSpecific {
 			}
 		}
 
-		public Level(int width, int storageSpace, int fileCount, int fileLength, float percentageDying, float remainingTime) {
+		public Level(int width, int storageSpace, int fileCount, int fileLength, float percentageDying, float timePerDyingSpace) {
 			this.width = width;
 			this.storageSpace = storageSpace;
-			this.remainingTime = remainingTime;
 			GenerateFiles(fileCount, fileLength);
 
 			int maxTries = 50;
@@ -165,13 +164,15 @@ namespace MonkeydomSpecific {
 				maxTries--;
 			}
 
-			int totalFreeSpaceRemaining = segments.Aggregate(0, (memo, next) => memo + next.segmentLength);
+			int totalFreeSpaceRemaining = storageSpace - segments.Aggregate(0, (memo, next) => memo + next.segmentLength);
 			int spaceThatWillDie = (int)Mathf.Ceil(percentageDying * totalFreeSpaceRemaining);
 
+			Debug.Log($"Free space: {totalFreeSpaceRemaining} / {storageSpace} - {spaceThatWillDie}");
 
 			eventualStorageSpace = storageSpace - spaceThatWillDie;
+			this.remainingTime = timePerDyingSpace * spaceThatWillDie;
 
-			dyingStartTime = remainingTime - 10.0f;
+			dyingStartTime = remainingTime; //- 10.0f; // disable for now
 		}
 
 		public LevelState levelState {
@@ -198,45 +199,55 @@ namespace MonkeydomSpecific {
 			segments = new List<SegmentData>();
 
 			files = new List<FileData>();
-
+			int remainingSpace = storageSpace - 10;
 			for (int index = 0; index < fileCount; index++) {
-				FileData file = new FileData(this, index, Random.Range(10, fileLength));
+				int testLength = Random.Range(Mathf.Max(fileLength - 20, 7), fileLength);
+				if (testLength > remainingSpace / 2.0f) {
+					testLength = Mathf.FloorToInt(remainingSpace / 2.0f);
+				}
+				FileData file = new FileData(this, index, testLength);
 				files.Add(file);
 				segments.AddRange(file.segments);
+				remainingSpace -= file.fileLength;
 			}
 		}
 
 		bool DistributeSegments() {
-			orderedFreeRanges = new List<IntRange> { new IntRange(0, storageSpace) };
-			int remainingTries = 100;
+			orderedFreeRanges = new List<IntRange> { new IntRange(0, storageSpace - 10) };
+
 			foreach (SegmentData segment in segments) {
 				bool placed = false;
 				while (!placed) {
-					int index = Random.Range(0, orderedFreeRanges.Count - 1);
-					IntRange targetRange = orderedFreeRanges[index];
-					int requiredLength = segment.segmentLength + 1;
+					int requiredLength = segment.segmentLength;
 					if (segment.partType == SegmentDataPartType.End) {
 						requiredLength += 1;
 					}
-					if (targetRange.length < requiredLength) {
-						remainingTries--;
+
+					var validRanges = orderedFreeRanges.Where((range) => range.length >= requiredLength).ToList();
+
+					IntRange targetRange = validRanges[Mathf.FloorToInt(Random.Range(0, validRanges.Count - 0.1f))];
+					int index = orderedFreeRanges.IndexOf(targetRange);
+
+
+					int randomStart = targetRange.location;
+					if (targetRange.length > requiredLength) {
+						randomStart += 1;
+					}
+					// place
+					IntRange placingRange = new IntRange(Random.Range(randomStart, targetRange.PositionAfter - requiredLength), requiredLength);
+					segment.location = placingRange.location;
+					placed = true;
+
+					// reduce placement options
+					var resultingRanges = targetRange.CutOutRange(placingRange);
+					if (resultingRanges.Count == 0) {
+						orderedFreeRanges.RemoveAt(index);
 					} else {
-						// place
-						IntRange placingRange = new IntRange(Random.Range(targetRange.location, targetRange.PositionAfter - requiredLength), requiredLength);
-						segment.location = placingRange.location;
-						placed = true;
-						// reduce placement options
-						var resultingRanges = targetRange.CutOutRange(placingRange);
-						if (resultingRanges.Count == 0) {
-							orderedFreeRanges.RemoveAt(index);
-						} else {
-							orderedFreeRanges[index] = resultingRanges[0];
-							if (resultingRanges.Count == 2) {
-								orderedFreeRanges.Insert(index + 1, resultingRanges[1]);
-							}
+						orderedFreeRanges[index] = resultingRanges[0];
+						if (resultingRanges.Count == 2) {
+							orderedFreeRanges.Insert(index + 1, resultingRanges[1]);
 						}
 					}
-					if (remainingTries <= 0) return false;
 				}
 			}
 

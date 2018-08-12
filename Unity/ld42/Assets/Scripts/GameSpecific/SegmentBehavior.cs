@@ -39,16 +39,16 @@ namespace MonkeydomSpecific {
 			return $"File{fileNumber}#{segmentNumber}-{segmentLength}";
 		}
 #if UNITY_EDITOR
-		protected virtual void OnValidate() {
-			UnityEditor.EditorApplication.update += NotifyOfUpdatedValues;
-		}
+		//protected virtual void OnValidate() {
+		//	UnityEditor.EditorApplication.update += NotifyOfUpdatedValues;
+		//}
 
-		public void NotifyOfUpdatedValues() {
-			UnityEditor.EditorApplication.update -= NotifyOfUpdatedValues;
-			if (validationListener != null) {
-				validationListener();
-			}
-		}
+		//public void NotifyOfUpdatedValues() {
+		//	UnityEditor.EditorApplication.update -= NotifyOfUpdatedValues;
+		//	if (validationListener != null) {
+		//		validationListener();
+		//	}
+		//}
 #endif
 
 	}
