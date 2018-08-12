@@ -14,6 +14,8 @@ namespace MonkeydomSpecific {
 		public TextMeshPro levelStatusText;
 		public TextMeshPro topRightText;
 		public Camera mainCamera;
+		public GameObject startScreen;
+		public LevelController levelController;
 
 
 		public override void Awake() {
@@ -24,10 +26,15 @@ namespace MonkeydomSpecific {
 		}
 
 		void InitGame() {
-			Debug.Log($"Here goes nothing {Camera.main}");
 		}
 
 		void Update() {
+			if (startScreen.activeInHierarchy) {
+				if (Input.anyKeyDown) {
+					levelController.gameObject.SetActive(true);
+					startScreen.SetActive(false);
+				}
+			}
 		}
 
 		public void DebugOutput(string str) {

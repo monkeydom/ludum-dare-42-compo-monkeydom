@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System.Text.RegularExpressions;
 
 namespace MonkeydomSpecific {
 
@@ -37,6 +38,18 @@ namespace MonkeydomSpecific {
 			}
 		}
 
+		public SegmentData() {
+
+		}
+
+		public SegmentData(string str) {
+			string value = Regex.Match(str, @"#(\d+)").Groups[1].Value;
+			//Debug.Log($"Match {str}: '{value}'");
+			if (value.Length > 0) {
+				fileNumber = System.Convert.ToInt32(value);
+			}
+		}
+
 		public override string ToString() {
 			return $"File{fileNumber}#{segmentNumber}-{segmentLength}";
 		}
@@ -56,7 +69,6 @@ namespace MonkeydomSpecific {
 	}
 
 	public class SegmentBehavior : MonoBehaviour {
-
 		public SegmentData segmentData;
 
 		public bool highlighted;
@@ -74,6 +86,7 @@ namespace MonkeydomSpecific {
 		// Use this for initialization
 		void Start() {
 			EnsureSegmentData();
+			UpdateAppearanceForCurrentValues();
 			selectionAnimator = GetComponent<Animator>();
 		}
 
@@ -171,6 +184,8 @@ namespace MonkeydomSpecific {
 
 		public void AdjustLengthForIntRange(IntRange range) {
 			if (segmentData.level == null) {
+				string value = Regex.Match(gameObject.name, @"#(\d+)").Groups[1].Value;
+				textScript.text = value;
 				return;
 			}
 			var extents = segmentData.level.ExtentsForIntRange(range);
