@@ -141,8 +141,6 @@ namespace MonkeydomSpecific {
 					}
 				}
 			}
-
-
 		}
 
 		public void ShowClick() {

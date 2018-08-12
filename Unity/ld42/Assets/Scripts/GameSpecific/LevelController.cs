@@ -113,8 +113,8 @@ namespace MonkeydomSpecific {
 			segmentsContainer = new GameObject("SegmentsContainer");
 
 			Transform transform = segmentsContainer.transform;
-			transform.localPosition = new Vector3(-level.width / 2.0f, 13, -1f);
-			transform.localScale = new Vector3(1f, 1f, 1.8f);
+			transform.localPosition = new Vector3(-level.width / 2.0f, 13, 0f);
+			transform.localScale = new Vector3(1f, 1f, 3.0f);
 			transform.parent = gameObject.transform;
 
 			foreach (SegmentData segment in level.segments) {
