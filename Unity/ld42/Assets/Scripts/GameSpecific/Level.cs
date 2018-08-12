@@ -201,7 +201,7 @@ namespace MonkeydomSpecific {
 			files = new List<FileData>();
 			int remainingSpace = storageSpace - 10;
 			for (int index = 0; index < fileCount; index++) {
-				int testLength = Random.Range(Mathf.Max(fileLength - 20, 7), fileLength);
+				int testLength = Random.Range(Mathf.Max(fileLength - width, 7), fileLength);
 				if (testLength > remainingSpace / 2.0f) {
 					testLength = Mathf.FloorToInt(remainingSpace / 2.0f);
 				}
