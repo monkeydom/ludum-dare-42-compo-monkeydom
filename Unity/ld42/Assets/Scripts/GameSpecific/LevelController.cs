@@ -21,6 +21,13 @@ namespace MonkeydomSpecific {
 		public Material[] segmentColorPalette;
 		public GameObject segmentsContainer;
 
+		[Space(5)]
+		public Transform BorderLeft;
+		public Transform BorderRight;
+		public Transform BorderTop;
+		public Transform BorderBottomLong;
+		public Transform BorderBottomShort;
+
 		List<Material> segmentColor;
 
 		// Use this for initialization
@@ -29,6 +36,7 @@ namespace MonkeydomSpecific {
 			//			InitializeSegments();
 			GenerateColors(level.files.Count);
 			GenerateSegmentObjects();
+			AdjustLevelBoundaries();
 			GameController.Instance.DebugOutput($"Segments: {level.segments.Count()}\nFiles: {level.files.Count}");
 		}
 
@@ -57,10 +65,11 @@ namespace MonkeydomSpecific {
 			if (segmentsContainer) {
 				Destroy(segmentsContainer);
 			}
-			segmentsContainer = new GameObject("Segments Container");
+			segmentsContainer = new GameObject("SegmentsContainer");
 
 			Transform transform = segmentsContainer.transform;
-			transform.localPosition = new Vector3(-level.width / 2.0f, 13, 0.1f);
+			transform.localPosition = new Vector3(-level.width / 2.0f, 13, -1f);
+			transform.localScale = new Vector3(1f, 1f, 1.8f);
 			transform.parent = gameObject.transform;
 
 			foreach (SegmentData segment in level.segments) {
@@ -75,6 +84,56 @@ namespace MonkeydomSpecific {
 					}
 				}
 			}
+		}
+
+		void AdjustLevelBoundaries() {
+			Transform parent = BorderTop.parent;
+			parent.position = segmentsContainer.transform.position;
+			parent.localScale = segmentsContainer.transform.localScale;
+
+			Transform containerTransform = segmentsContainer.transform;
+
+			Vector3 center = containerTransform.TransformPoint(new Vector3(level.width / 2.0f, level.rowCount / -2.0f, 0));
+
+			Vector3 verticalScale = new Vector3(1f, level.rowCount + 3.10f, 1f);
+
+			Vector3 position;
+			position = BorderLeft.position;
+			position.x = containerTransform.TransformPoint(0.55f * Vector3.left).x;
+			position.y = center.y;
+			BorderLeft.position = position;
+			BorderLeft.localScale = verticalScale;
+
+			position = BorderRight.position;
+			position.x = containerTransform.TransformPoint((level.width + 0.55f) * Vector3.right).x;
+			position.y = center.y;
+			BorderRight.position = position;
+			BorderRight.localScale = verticalScale;
+
+
+			Vector3 horizontalScale = new Vector3(level.width + 0.1f, 1, 1);
+			position = BorderTop.position;
+			position.y = containerTransform.TransformPoint(1.05f * Vector3.up).y;
+			position.x = center.x;
+			BorderTop.position = position;
+			BorderTop.localScale = horizontalScale;
+
+			position = BorderBottomLong.position;
+			position.x = center.x;
+			position.y = containerTransform.TransformPoint((level.rowCount + 1.05f) * Vector3.down).y;
+			BorderBottomLong.position = position;
+			BorderBottomLong.localScale = horizontalScale;
+
+			int lastRowWidth = level.lastRowWidth;
+			int lastRowRemainingWidth = level.width - lastRowWidth;
+			position = BorderBottomShort.position;
+			position.x = containerTransform.TransformPoint((lastRowWidth + lastRowRemainingWidth / 2.0f + 0.05f) * Vector3.right).x;
+			position.y = containerTransform.TransformPoint((level.rowCount + 0.05f) * Vector3.down).y;
+			BorderBottomShort.position = position;
+			BorderBottomShort.localScale = new Vector3(lastRowRemainingWidth, 1, 1);
+
+
+
 		}
 
 		#region Geometry stuff

@@ -77,6 +77,17 @@ namespace MonkeydomSpecific {
 		public List<FileData> files;
 		List<IntRange> orderedFreeRanges;
 
+		public int rowCount {
+			get {
+				return (int)Mathf.Ceil(storageSpace / width);
+			}
+		}
+		public int lastRowWidth {
+			get {
+				return storageSpace % width;
+			}
+		}
+
 		public Level(int width, int storageSpace, int fileCount, int fileLength) {
 			this.width = width;
 			this.storageSpace = storageSpace;
