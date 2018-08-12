@@ -105,6 +105,9 @@ namespace MonkeydomSpecific {
 			HandleInput();
 		}
 
+
+		Vector3 lastClickDownLocation;
+		float lastClickDownTime;
 		void HandleInput() {
 			if (!segmentsContainer) {
 				return;
@@ -127,14 +130,15 @@ namespace MonkeydomSpecific {
 			float enter = 0.0f;
 
 			int? potentialTargetLocation = null;
-			if (selectedSegment) {
-				if (plane.Raycast(ray, out enter)) {
-					//Get the point that is clicked
-					Vector3 hitPoint = ray.GetPoint(enter);
+			Vector3 localMousePosition = Vector3.zero;
+			if (plane.Raycast(ray, out enter)) {
+				//Get the point that is clicked
+				Vector3 hitPoint = ray.GetPoint(enter);
 
-					Vector3 localPosition = segmentsContainer.transform.InverseTransformPoint(hitPoint);
-					potentialTargetLocation = LocationForPosition(localPosition);
+				localMousePosition = segmentsContainer.transform.InverseTransformPoint(hitPoint);
+				potentialTargetLocation = LocationForPosition(localMousePosition);
 
+				if (selectedSegment) {
 					if (potentialTargetLocation.HasValue) {
 						int? suggestedLocation = null;
 						if (!level.CanCopySegmentToLocation(selectedSegment.segmentData, potentialTargetLocation.Value, out suggestedLocation)) {
@@ -160,6 +164,8 @@ namespace MonkeydomSpecific {
 			if (Input.GetButtonDown("Fire1")) {
 				if (hoverSegment) {
 					SetSelectedSegment(hoverSegment);
+					lastClickDownTime = Time.realtimeSinceStartup;
+					lastClickDownLocation = localMousePosition;
 				} else if (selectedSegment) {
 					if (potentialTargetLocation.HasValue && !segmentUnderMouse) {
 						PlaceTemporarySegment(potentialTargetLocation.Value);
@@ -171,7 +177,10 @@ namespace MonkeydomSpecific {
 
 			if (Input.GetButtonUp("Fire1")) {
 				if (selectedSegment) {
-					if (potentialTargetLocation.HasValue && !segmentUnderMouse) {
+					bool allowDrag = (Time.realtimeSinceStartup - lastClickDownTime) > 1.0f / 6.0f ||
+									 (localMousePosition - lastClickDownLocation).magnitude > 2.0;
+
+					if (potentialTargetLocation.HasValue && !segmentUnderMouse && allowDrag) {
 						PlaceTemporarySegment(potentialTargetLocation.Value);
 					}
 				}
