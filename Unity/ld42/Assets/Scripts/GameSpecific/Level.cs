@@ -89,6 +89,13 @@ namespace MonkeydomSpecific {
 			}
 		}
 
+		public bool IsFinished {
+			get {
+				var segmentRuns = SegmentRuns();
+				return segmentRuns.Count == 1 && segmentRuns.First().Count == segments.Count;
+			}
+		}
+
 		public string statusString {
 			get {
 				string result = SegmentRuns().Aggregate("", (memo, run) =>
@@ -181,6 +188,9 @@ namespace MonkeydomSpecific {
 					return LevelState.GameOver;
 				}
 				if (remainingTime <= 0f) {
+					return LevelState.Finished;
+				}
+				if (files.All((file) => file.IsFinished)) {
 					return LevelState.Finished;
 				}
 

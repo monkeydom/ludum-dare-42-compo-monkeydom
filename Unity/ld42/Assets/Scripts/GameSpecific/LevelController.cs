@@ -296,6 +296,8 @@ namespace MonkeydomSpecific {
 		void ScoreLevel() {
 			int scoreToAdd = level.files.Aggregate(0, (memo, file) => memo + file.score);
 			score += scoreToAdd;
+
+			StartNextStage();
 		}
 
 		void Update() {
@@ -310,7 +312,7 @@ namespace MonkeydomSpecific {
 				UpdateStatDisplay();
 				LevelState levelState = level.levelState;
 				if (levelState == LevelState.Finished) {
-					StartNextStage();
+					ScoreLevel();
 				} else if (levelState == LevelState.GameOver) {
 					HandleGameOver();
 				} else {
