@@ -190,11 +190,31 @@ namespace MonkeydomSpecific {
 				if (remainingTime <= 0f) {
 					return LevelState.Finished;
 				}
-				if (files.All((file) => file.IsFinished)) {
+				if (files.All((file) => file.IsFinished) &&
+					segments.Last().PositionAfter - 1 < eventualStorageSpace) {
 					return LevelState.Finished;
 				}
 
 				return LevelState.Running;
+			}
+		}
+
+		public int score {
+			get {
+				int fileScore = files.Aggregate(0, (memo, file) => memo + file.score);
+				files.Sort((a, b) => a.segments.First().location.CompareTo(b.segments.First().location));
+				int multiplicator = 1;
+				for (int i = 0; i < files.Count - 1; i++) {
+					if (files[0].segments.Last().PositionAfter == files[1].segments.First().location) {
+						multiplicator += 1;
+					}
+				}
+				int remainingScore = (CurrentEnd - segments.Last().PositionAfter) * 15;
+				int additionalNonCorruptedScore = (CurrentEnd - eventualStorageSpace) * 50;
+				int multipliedFileScore = fileScore * multiplicator;
+				int score = multipliedFileScore + remainingScore + additionalNonCorruptedScore;
+				Debug.Log($"Level score: files:{fileScore} filesMultiplied:{multipliedFileScore} remaining:{remainingScore} nonCorrupted:{additionalNonCorruptedScore} - total: {score}");
+				return score;
 			}
 		}
 

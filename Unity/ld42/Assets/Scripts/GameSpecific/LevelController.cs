@@ -294,7 +294,7 @@ namespace MonkeydomSpecific {
 		}
 
 		void ScoreLevel() {
-			int scoreToAdd = level.files.Aggregate(0, (memo, file) => memo + file.score);
+			int scoreToAdd = level.score;
 			score += scoreToAdd;
 
 			StartNextStage();
