@@ -11,6 +11,8 @@ namespace MonkeydomSpecific {
 		[Header("Outlets")]
 		public TextMeshPro debugOutput;
 		public TextMeshPro statusText;
+		public TextMeshPro levelStatusText;
+		public TextMeshPro topRightText;
 		public Camera mainCamera;
 
 
@@ -44,6 +46,21 @@ namespace MonkeydomSpecific {
 			}
 		}
 
+		public void SetLevelStatusText(string str) {
+			if (levelStatusText) {
+				levelStatusText.text = str;
+			} else {
+				Debug.Log($"Level Status Text: {str}");
+			}
+		}
+
+		public void SetTopRightText(string str) {
+			if (topRightText) {
+				topRightText.text = str;
+			} else {
+				Debug.Log($"Top right Text: {str}");
+			}
+		}
 
 		#region Statics
 

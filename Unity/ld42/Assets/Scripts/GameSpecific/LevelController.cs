@@ -5,6 +5,12 @@ using System.Linq;
 
 namespace MonkeydomSpecific {
 
+	public enum LevelControllerState {
+		Paused,
+		Running,
+		GameOver,
+	}
+
 	public class LevelController : MonoBehaviour {
 
 		SegmentBehavior hoverSegment;
@@ -13,10 +19,15 @@ namespace MonkeydomSpecific {
 		GameObject temporaryMoveSegment;
 
 		Level level;
+		int stage;
+		int score = 0;
+
+		LevelControllerState state;
 
 		[Header("Outlets")]
 		public Camera mainCamera;
 		public GameObject segmentPrefab;
+		public GameObject deadStoragePrefab;
 		public Material segmentBaseColor;
 		public Material[] segmentColorPalette;
 		public GameObject segmentsContainer;
@@ -30,14 +41,35 @@ namespace MonkeydomSpecific {
 
 		List<Material> segmentColor;
 
+		List<DeadStorageBehavior> deadStorageBehaviors;
+
 		// Use this for initialization
 		public void Start() {
-			level = new Level(16, 12 * 20 + 13, Random.Range(3, 5), Random.Range(16, 60));
-			//			InitializeSegments();
+			StartGame();
+		}
+
+		void GenerateLevel(int stage) {
+			int maxFileCount = Mathf.Min(stage, 16);
+			int fileCount = Random.Range(Mathf.Max(1, maxFileCount - 5), maxFileCount);
+			int width = Mathf.Min(12 + stage, 36);
+			int maxFileLength = width * 2 - 1;
+			int storageSpace = width * 6 + stage * 17;
+			storageSpace = Mathf.FloorToInt(Random.Range(storageSpace, storageSpace * 1.4f));
+			float precentageOfDyingSpace = Random.Range(0.5f, 0.5f + stage * 0.06f);
+			state = LevelControllerState.Running;
+			level = new Level(width, storageSpace, fileCount, maxFileLength, precentageOfDyingSpace, 66.0f);
+
 			GenerateColors(level.files.Count);
 			GenerateSegmentObjects();
+			GenerateDeadStorageIndicators();
 			AdjustLevelBoundaries();
 			GameController.Instance.DebugOutput($"Segments: {level.segments.Count()}\nFiles: {level.files.Count}");
+			UpdateScoreAndStage();
+		}
+
+		public void StartGame() {
+			stage = 1;
+			GenerateLevel(stage);
 		}
 
 		void InitializeSegments() {
@@ -86,6 +118,19 @@ namespace MonkeydomSpecific {
 			}
 		}
 
+		void GenerateDeadStorageIndicators() {
+			Transform parent = segmentsContainer.transform;
+			deadStorageBehaviors = new List<DeadStorageBehavior>();
+			for (int location = level.eventualStorageSpace; location < level.storageSpace; location++) {
+				GameObject go = Instantiate(deadStoragePrefab, parent);
+				var behavior = go.GetComponent<DeadStorageBehavior>();
+				go.transform.localPosition = PositionForLocation(location);
+				behavior.SetProgress(0.0f);
+				deadStorageBehaviors.Add(behavior);
+				go.name = $"DeadStorage-{location}";
+			}
+		}
+
 		void AdjustLevelBoundaries() {
 			Transform parent = BorderTop.parent;
 			parent.position = segmentsContainer.transform.position;
@@ -131,9 +176,6 @@ namespace MonkeydomSpecific {
 			position.y = containerTransform.TransformPoint((level.rowCount + 0.05f) * Vector3.down).y;
 			BorderBottomShort.position = position;
 			BorderBottomShort.localScale = new Vector3(lastRowRemainingWidth, 1, 1);
-
-
-
 		}
 
 		#region Geometry stuff
@@ -159,21 +201,73 @@ namespace MonkeydomSpecific {
 
 		#endregion
 
-
-		void Update() {
-			HandleInput();
+		void HandleGameOver() {
+			state = LevelControllerState.GameOver;
+			UpdateScoreAndStage();
 		}
 
+		void StartNextStage() {
+			stage++;
+			GenerateLevel(stage);
+		}
 
-		Vector3 lastClickDownLocation;
-		float lastClickDownTime;
-		void HandleInput() {
-			if (!segmentsContainer) {
-				return;
+		void ScoreLevel() {
+
+		}
+
+		void Update() {
+			if (state == LevelControllerState.Running) {
+				level.AdvanceTime(Time.deltaTime);
+				float dyingMemoryPosition = level.dyingMemoryPosition;
+				if (dyingMemoryPosition < level.storageSpace) {
+					int deadStorageIndex = (int)Mathf.Floor(dyingMemoryPosition);
+					int localIndex = deadStorageIndex - level.eventualStorageSpace;
+					deadStorageBehaviors[localIndex].SetProgress(1.0f - (dyingMemoryPosition - deadStorageIndex));
+				}
+				UpdateStatDisplay();
+				LevelState levelState = level.levelState;
+				if (levelState == LevelState.Finished) {
+					StartNextStage();
+				} else if (levelState == LevelState.GameOver) {
+					HandleGameOver();
+				} else {
+					HandleGamePlayInput();
+				}
 			}
 
 			if (Input.GetButtonDown("Jump")) {
-				FindObjectOfType<LevelController>().Start();
+				if (state == LevelControllerState.Running) {
+					StartNextStage();
+				} else {
+					StartGame();
+				}
+			}
+		}
+
+		void UpdateStatDisplay() {
+			float remainingTime = level.remainingTime;
+			float timeBeforeStaringDying = remainingTime - level.dyingStartTime;
+			string timeString = $"{remainingTime.ToString("0.0")}";
+			if (timeBeforeStaringDying > 0) {
+				timeString = $"Disk decays in: {timeBeforeStaringDying.ToString("0.0")}";
+			}
+			GameController.Instance.SetLevelStatusText(timeString);
+		}
+
+		void UpdateScoreAndStage() {
+			string text = $"Stage {stage} - {score.ToString("000000")}";
+
+			if (state == LevelControllerState.GameOver) {
+				text = $"Game Over - {text}";
+			}
+			GameController.Instance.SetTopRightText(text);
+		}
+
+		Vector3 lastClickDownLocation;
+		float lastClickDownTime;
+		void HandleGamePlayInput() {
+			if (!segmentsContainer) {
+				return;
 			}
 
 			Vector3 mousePosition = Input.mousePosition;

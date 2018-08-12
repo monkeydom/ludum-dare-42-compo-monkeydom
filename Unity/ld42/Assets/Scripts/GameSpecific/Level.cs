@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 namespace MonkeydomSpecific {
 
@@ -70,12 +71,21 @@ namespace MonkeydomSpecific {
 		}
 	}
 
+	public enum LevelState {
+		Running,
+		Finished,
+		GameOver
+	}
+
 	public class Level : ScriptableObject {
 		public int width;
 		public int storageSpace;
+		public int eventualStorageSpace;
 		public List<SegmentData> segments;
 		public List<FileData> files;
 		List<IntRange> orderedFreeRanges;
+		public float remainingTime;
+		public float dyingStartTime;
 
 		public int rowCount {
 			get {
@@ -88,14 +98,43 @@ namespace MonkeydomSpecific {
 			}
 		}
 
-		public Level(int width, int storageSpace, int fileCount, int fileLength) {
+		public Level(int width, int storageSpace, int fileCount, int fileLength, float percentageDying, float remainingTime) {
 			this.width = width;
 			this.storageSpace = storageSpace;
+			this.remainingTime = remainingTime;
 			GenerateFiles(fileCount, fileLength);
 
 			int maxTries = 50;
 			while (!DistributeSegments() && maxTries > 0) {
 				maxTries--;
+			}
+
+			int totalFreeSpaceRemaining = segments.Aggregate(0, (memo, next) => memo + next.segmentLength);
+			int spaceThatWillDie = (int)Mathf.Ceil(percentageDying * totalFreeSpaceRemaining);
+
+
+			eventualStorageSpace = storageSpace - spaceThatWillDie;
+
+			dyingStartTime = remainingTime - 10.0f;
+		}
+
+		public LevelState levelState {
+			get {
+				if (segments.Last().PositionAfter > CurrentEnd) {
+					return LevelState.GameOver;
+				}
+				if (remainingTime <= 0f) {
+					return LevelState.Finished;
+				}
+
+				return LevelState.Running;
+			}
+		}
+
+		public void AdvanceTime(float deltaTime) {
+			remainingTime -= deltaTime;
+			if (remainingTime < 0) {
+				remainingTime = 0f;
 			}
 		}
 
@@ -153,10 +192,19 @@ namespace MonkeydomSpecific {
 			segments.Sort((a, b) => a.location.CompareTo(b.location));
 		}
 
+		public float dyingMemoryPosition {
+			get {
+				if (remainingTime > dyingStartTime) {
+					return storageSpace;
+				} else {
+					return Mathf.Lerp(storageSpace, eventualStorageSpace, 1.0f - remainingTime / dyingStartTime);
+				}
+			}
+		}
+
 		public int CurrentEnd {
 			get {
-				// TODO: return end - timing based things that have been eaten
-				return storageSpace;
+				return Mathf.FloorToInt(dyingMemoryPosition);
 			}
 		}
 
