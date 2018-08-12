@@ -49,13 +49,13 @@ namespace MonkeydomSpecific {
 		}
 
 		void GenerateLevel(int stage) {
-			int maxFileCount = Mathf.Min(stage, 16);
-			int fileCount = Random.Range(Mathf.Max(1, maxFileCount - 5), maxFileCount);
+			int maxFileCount = Mathf.Min(stage + 1, 16);
+			int fileCount = Random.Range(Mathf.Max(2, maxFileCount - 5), maxFileCount);
 			int width = Mathf.Min(12 + stage, 36);
 			int maxFileLength = width * 2 - 1;
 			int storageSpace = width * 6 + stage * 17;
 			storageSpace = Mathf.FloorToInt(Random.Range(storageSpace, storageSpace * 1.4f));
-			float precentageOfDyingSpace = Random.Range(0.5f, 0.5f + stage * 0.06f);
+			float precentageOfDyingSpace = Random.Range(0.8f, Mathf.Min(0.8f + stage * 0.06f, 1.0f));
 			state = LevelControllerState.Running;
 			level = new Level(width, storageSpace, fileCount, maxFileLength, precentageOfDyingSpace, 66.0f);
 
