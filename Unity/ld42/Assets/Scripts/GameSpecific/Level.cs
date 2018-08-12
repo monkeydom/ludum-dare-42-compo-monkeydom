@@ -9,11 +9,12 @@ namespace MonkeydomSpecific {
 		public int fileID;
 		public int fileLength;
 		public List<SegmentData> segments;
+		public Level level;
 
 		public FileData(Level level, int fileID, int fileLength) {
 			this.fileID = fileID;
 			this.fileLength = fileLength;
-
+			this.level = level;
 			segments = new List<SegmentData>();
 
 			int segmentIndex = 0;
@@ -42,7 +43,62 @@ namespace MonkeydomSpecific {
 			}
 
 		}
+
+		public string fileName {
+			get {
+				return $"File{fileID}";
+			}
+		}
+
+		public List<List<SegmentData>> SegmentRuns() {
+			List<List<SegmentData>> result = new List<List<SegmentData>>();
+			List<SegmentData> currentData = new List<SegmentData>();
+			foreach (SegmentData segment in segments) {
+				if (currentData.Count > 0) {
+					if (currentData.Last().PositionAfter != segment.location ||
+						currentData.Last().segmentNumber + 1 != segment.segmentNumber) {
+						if (currentData.Count > 1) {
+							result.Add(currentData.ToArray().ToList());
+						}
+						currentData.Clear();
+					}
+				}
+				currentData.Add(segment);
+			}
+			if (currentData.Count > 1) {
+				result.Add(currentData);
+			}
+			return result;
+		}
+
+		public int score {
+			get {
+				int result = 0;
+				var segmentRuns = SegmentRuns();
+				foreach (var segmentRun in segmentRuns) {
+					result += segmentRun.Count * 100;
+					if (segmentRun.Count > 3) {
+						result += 50 * segmentRun.Count - 2;
+					}
+					if (segmentRun.Count == segments.Count) {
+						result += 200 * segmentRun.Count;
+					}
+				}
+
+				return result;
+			}
+		}
+
+		public string statusString {
+			get {
+				string result = SegmentRuns().Aggregate("", (memo, run) =>
+														memo + $"[{run.First().segmentNumber}-{run.Last().segmentNumber}]");
+
+				return result;
+			}
+		}
 	}
+
 
 	public class IntRange {
 		public int location;
@@ -190,6 +246,9 @@ namespace MonkeydomSpecific {
 
 		void SortSegments() {
 			segments.Sort((a, b) => a.location.CompareTo(b.location));
+			foreach (var fileData in files) {
+				fileData.segments.Sort((a, b) => a.location.CompareTo(b.location));
+			}
 		}
 
 		public float dyingMemoryPosition {

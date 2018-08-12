@@ -16,6 +16,9 @@ namespace MonkeydomSpecific {
 		SegmentBehavior hoverSegment;
 		SegmentBehavior selectedSegment;
 
+		List<SegmentBehavior> hoverSegments;
+		List<SegmentBehavior> selectedSegments;
+
 		GameObject temporaryMoveSegment;
 
 		Level level;
@@ -28,9 +31,11 @@ namespace MonkeydomSpecific {
 		public Camera mainCamera;
 		public GameObject segmentPrefab;
 		public GameObject deadStoragePrefab;
+		public GameObject fileStatusPrefab;
 		public Material segmentBaseColor;
 		public Material[] segmentColorPalette;
 		public GameObject segmentsContainer;
+		public GameObject fileStatusContainer;
 
 		[Space(5)]
 		public Transform BorderLeft;
@@ -40,6 +45,7 @@ namespace MonkeydomSpecific {
 		public Transform BorderBottomShort;
 
 		List<Material> segmentColor;
+		List<FileStatusBehavior> fileStatusBehaviors;
 
 		List<DeadStorageBehavior> deadStorageBehaviors;
 
@@ -63,6 +69,7 @@ namespace MonkeydomSpecific {
 			GenerateSegmentObjects();
 			GenerateDeadStorageIndicators();
 			AdjustLevelBoundaries();
+			GenerateFileStatusObjects();
 			GameController.Instance.DebugOutput($"Segments: {level.segments.Count()}\nFiles: {level.files.Count}");
 			UpdateScoreAndStage();
 		}
@@ -115,6 +122,46 @@ namespace MonkeydomSpecific {
 						renderer.sharedMaterial = segmentColor[segment.fileNumber];
 					}
 				}
+			}
+		}
+
+		void GenerateFileStatusObjects() {
+			if (fileStatusContainer) {
+				Destroy(fileStatusContainer);
+			}
+			fileStatusContainer = new GameObject("FileStatusContainer");
+
+			Transform transform = fileStatusContainer.transform;
+			transform.localPosition = new Vector3(-20f, 13f, -1f);
+			transform.parent = gameObject.transform;
+
+			fileStatusBehaviors = new List<FileStatusBehavior>();
+
+			Vector3 position = Vector3.zero;
+			Vector3 horizontalMovement = Vector3.left * 1.0f;
+			Transform parent = fileStatusContainer.transform;
+
+			foreach (FileData file in level.files) {
+				GameObject go = Instantiate(fileStatusPrefab, parent);
+				var behavior = go.GetComponent<FileStatusBehavior>();
+				go.transform.localPosition = position;
+				fileStatusBehaviors.Add(behavior);
+				go.name = $"FileStatus-{file.fileID}";
+				foreach (MeshRenderer renderer in go.GetComponentsInChildren<MeshRenderer>(true)) {
+					if (renderer.gameObject.tag == "FileObject") {
+						renderer.sharedMaterial = segmentColor[file.fileID];
+					}
+				}
+				position += Vector3.down * 3.5f + horizontalMovement;
+				horizontalMovement *= -1f;
+			}
+			UpdateFileStatusObjects();
+		}
+
+		void UpdateFileStatusObjects() {
+			for (int i = 0; i < fileStatusBehaviors.Count; i++) {
+				FileData file = level.files[i];
+				fileStatusBehaviors[i].SetTexts(file.fileName, file.statusString, $"{file.score}");
 			}
 		}
 
@@ -364,6 +411,24 @@ namespace MonkeydomSpecific {
 			selectedSegment.transform.localPosition = PositionForLocation(location);
 			selectedSegment.UpdateAppearanceForCurrentValues();
 			SetSelectedSegment(null);
+			UpdateFileStatusObjects();
+		}
+
+		void UpdateFileStatusHighlight() {
+			int? highlightedFileID = null;
+			if (selectedSegment) {
+				highlightedFileID = selectedSegment.segmentData.fileNumber;
+			} else if (hoverSegment) {
+				highlightedFileID = hoverSegment.segmentData.fileNumber;
+			}
+
+			foreach (FileStatusBehavior behavior in fileStatusBehaviors) {
+				behavior.highlighted = false;
+			}
+
+			if (highlightedFileID.HasValue) {
+				fileStatusBehaviors[highlightedFileID.Value].highlighted = true;
+			}
 		}
 
 		void SetHoverSegment(SegmentBehavior segment) {
@@ -376,6 +441,8 @@ namespace MonkeydomSpecific {
 				}
 				GameController.Instance.DebugOutput($"Hover change from {hoverSegment} to {segment}");
 				hoverSegment = segment;
+
+				UpdateFileStatusHighlight();
 			}
 		}
 
@@ -402,6 +469,7 @@ namespace MonkeydomSpecific {
 					Destroy(temporaryMoveSegment);
 				}
 			}
+			UpdateFileStatusHighlight();
 		}
 	}
 
